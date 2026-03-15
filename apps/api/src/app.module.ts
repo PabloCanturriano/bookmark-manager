@@ -1,7 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import * as Joi from "joi";
+import { AuthModule } from "./auth/auth.module";
 import { HealthModule } from "./health/health.module";
+import { PrismaModule } from "./prisma/prisma.module";
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { HealthModule } from "./health/health.module";
         PORT: Joi.number().default(3001),
       }),
     }),
+    PrismaModule,
+    AuthModule,
     HealthModule,
   ],
 })
