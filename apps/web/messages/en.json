@@ -1,0 +1,84 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Welcome back",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submitButton": "Sign in",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create one"
+    },
+    "register": {
+      "title": "Create account",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submitButton": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    }
+  },
+  "bookmarks": {
+    "empty": "No bookmarks yet. Add your first one!",
+    "addButton": "Add bookmark",
+    "form": {
+      "urlLabel": "URL",
+      "titleLabel": "Title",
+      "descriptionLabel": "Description",
+      "collectionLabel": "Collection",
+      "tagsLabel": "Tags",
+      "submitButton": "Save bookmark",
+      "cancelButton": "Cancel"
+    },
+    "card": {
+      "favoriteToggle": "Toggle favorite",
+      "deleteButton": "Delete",
+      "editButton": "Edit"
+    }
+  },
+  "collections": {
+    "empty": "No collections yet.",
+    "addButton": "New collection",
+    "form": {
+      "nameLabel": "Name",
+      "descriptionLabel": "Description",
+      "isPublicLabel": "Make public",
+      "parentLabel": "Parent collection",
+      "submitButton": "Save",
+      "cancelButton": "Cancel"
+    }
+  },
+  "errors": {
+    "INVALID_CREDENTIALS": "Invalid email or password.",
+    "EMAIL_ALREADY_EXISTS": "This email is already registered.",
+    "INVALID_REFRESH_TOKEN": "Your session is invalid. Please sign in again.",
+    "REFRESH_TOKEN_EXPIRED": "Your session has expired. Please sign in again.",
+    "BOOKMARK_NOT_FOUND": "Bookmark not found.",
+    "COLLECTION_NOT_FOUND": "Collection not found.",
+    "COLLECTION_NESTING_NOT_ALLOWED": "A sub-collection cannot contain other sub-collections.",
+    "UNAUTHORIZED": "You must be signed in to do that.",
+    "FORBIDDEN": "You don't have permission to do that.",
+    "NOT_FOUND": "Resource not found.",
+    "VALIDATION_ERROR": "Please check the form and try again.",
+    "INTERNAL_ERROR": "Something went wrong. Please try again."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "passwordMinLength": "Password must be at least 8 characters.",
+    "passwordMaxLength": "Password cannot exceed 72 characters.",
+    "invalidUrl": "Enter a valid URL.",
+    "nameTooLong": "Name is too long.",
+    "descriptionTooLong": "Description is too long."
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "noResults": "No results found."
+  }
+}

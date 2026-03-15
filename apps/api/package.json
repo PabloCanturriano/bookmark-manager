@@ -6,11 +6,19 @@
       "dev": "echo 'api dev — to be configured in phase 5'",
       "build": "echo 'api build — to be configured in phase 5'",
       "test": "echo 'api test — to be configured in phase 5'",
-      "lint": "eslint src"
+      "lint": "eslint src",
+      "db:migrate": "prisma migrate dev",
+      "db:studio": "prisma studio",
+      "db:seed": "ts-node prisma/seed.ts",
+      "db:generate": "prisma generate"
+   },
+   "dependencies": {
+      "@prisma/client": "^6.5.0"
    },
    "devDependencies": {
       "@bookmark-manager/config": "workspace:*",
       "eslint": "^9.21.0",
+      "prisma": "^6.5.0",
       "typescript": "^5.7.3"
    }
 }
