@@ -3,9 +3,9 @@
    "version": "0.0.1",
    "private": true,
    "scripts": {
-      "dev": "echo 'api dev — to be configured in phase 5'",
-      "build": "echo 'api build — to be configured in phase 5'",
-      "test": "echo 'api test — to be configured in phase 5'",
+      "dev": "nest start --watch",
+      "build": "nest build",
+      "test": "echo 'api test — to be configured in phase 8'",
       "lint": "eslint src",
       "db:migrate": "prisma migrate dev",
       "db:studio": "prisma studio",
@@ -13,15 +13,25 @@
       "db:generate": "prisma generate"
    },
    "dependencies": {
+      "@nestjs/common": "^11.1.16",
+      "@nestjs/config": "^4.0.3",
+      "@nestjs/core": "^11.1.16",
+      "@nestjs/platform-express": "^11.1.16",
       "@prisma/client": "^6.5.0",
-      "bcryptjs": "^3.0.3"
+      "bcryptjs": "^3.0.3",
+      "joi": "^18.0.2",
+      "reflect-metadata": "^0.2.2",
+      "rxjs": "^7.8.2"
    },
    "prisma": {
       "seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
    },
    "devDependencies": {
       "@bookmark-manager/config": "workspace:*",
+      "@nestjs/cli": "^11.0.16",
+      "@nestjs/schematics": "^11.0.9",
       "@types/bcryptjs": "^3.0.0",
+      "@types/express": "^5.0.6",
       "@types/node": "^25.5.0",
       "eslint": "^9.21.0",
       "prisma": "^6.5.0",
