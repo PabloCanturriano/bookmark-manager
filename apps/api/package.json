@@ -1,0 +1,16 @@
+{
+   "name": "@bookmark-manager/api",
+   "version": "0.0.1",
+   "private": true,
+   "scripts": {
+      "dev": "echo 'api dev — to be configured in phase 5'",
+      "build": "echo 'api build — to be configured in phase 5'",
+      "test": "echo 'api test — to be configured in phase 5'",
+      "lint": "eslint src"
+   },
+   "devDependencies": {
+      "@bookmark-manager/config": "workspace:*",
+      "eslint": "^9.21.0",
+      "typescript": "^5.7.3"
+   }
+}
