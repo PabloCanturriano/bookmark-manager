@@ -9,16 +9,23 @@
       "lint": "eslint src",
       "db:migrate": "prisma migrate dev",
       "db:studio": "prisma studio",
-      "db:seed": "ts-node prisma/seed.ts",
+      "db:seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts",
       "db:generate": "prisma generate"
    },
    "dependencies": {
-      "@prisma/client": "^6.5.0"
+      "@prisma/client": "^6.5.0",
+      "bcryptjs": "^3.0.3"
+   },
+   "prisma": {
+      "seed": "ts-node --project prisma/tsconfig.json prisma/seed.ts"
    },
    "devDependencies": {
       "@bookmark-manager/config": "workspace:*",
+      "@types/bcryptjs": "^3.0.0",
+      "@types/node": "^25.5.0",
       "eslint": "^9.21.0",
       "prisma": "^6.5.0",
+      "ts-node": "^10.9.2",
       "typescript": "^5.7.3"
    }
 }
