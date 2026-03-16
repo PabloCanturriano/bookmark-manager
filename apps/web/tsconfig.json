@@ -7,12 +7,13 @@
       "lib": ["dom", "dom.iterable", "esnext"],
       "jsx": "preserve",
       "allowJs": true,
+      "esModuleInterop": true,
       "incremental": true,
       "plugins": [{ "name": "next" }],
       "paths": {
          "@/*": ["./src/*"]
       }
    },
-   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+   "include": ["next-env.d.ts", "**/*.ts", "**/*.mts", "**/*.tsx", ".next/types/**/*.ts"],
    "exclude": ["node_modules"]
 }
