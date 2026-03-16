@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ReactNode } from "react";
 import { AntdProvider } from "@/components/providers/AntdProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import "./globals.css";
 
 export const metadata = {
@@ -17,7 +18,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <AntdProvider>{children}</AntdProvider>
+          <QueryProvider>
+            <AntdProvider>{children}</AntdProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -7,9 +7,15 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
-import { LoginDto, RefreshTokenDto, RegisterDto } from "@bookmark-manager/types";
+import { LoginDto, RegisterDto } from "@bookmark-manager/types";
 import { PrismaService } from "../prisma/prisma.service";
 import { JwtPayload } from "./strategies/jwt.strategy";
+
+export interface TokenPair {
+  accessToken: string;
+  refreshToken: string;
+  user: { id: string; email: string };
+}
 
 @Injectable()
 export class AuthService {
@@ -19,7 +25,7 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterDto): Promise<TokenPair> {
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -33,7 +39,7 @@ export class AuthService {
     return this.issueTokens(user.id, user.email);
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<TokenPair> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -45,9 +51,9 @@ export class AuthService {
     return this.issueTokens(user.id, user.email);
   }
 
-  async refresh(dto: RefreshTokenDto) {
+  async refresh(refreshToken: string): Promise<TokenPair> {
     const stored = await this.prisma.refreshToken.findUnique({
-      where: { token: dto.refreshToken },
+      where: { token: refreshToken },
       include: { user: true },
     });
 
@@ -63,7 +69,7 @@ export class AuthService {
     return this.issueTokens(stored.user.id, stored.user.email);
   }
 
-  private async issueTokens(userId: string, email: string) {
+  private async issueTokens(userId: string, email: string): Promise<TokenPair> {
     const payload: JwtPayload = { sub: userId, email };
 
     const accessToken = this.jwt.sign(payload, {
@@ -82,6 +88,6 @@ export class AuthService {
       data: { token: rawRefresh, userId, expiresAt },
     });
 
-    return { accessToken, refreshToken: rawRefresh };
+    return { accessToken, refreshToken: rawRefresh, user: { id: userId, email } };
   }
 }
