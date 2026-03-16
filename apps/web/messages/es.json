@@ -1,84 +1,84 @@
 {
-  "auth": {
-    "login": {
-      "title": "Iniciar sesión",
-      "subtitle": "Bienvenido de vuelta",
-      "emailLabel": "Correo electrónico",
-      "passwordLabel": "Contraseña",
-      "submitButton": "Iniciar sesión",
-      "noAccount": "¿No tienes cuenta?",
-      "registerLink": "Créala aquí"
-    },
-    "register": {
-      "title": "Crear cuenta",
-      "nameLabel": "Nombre",
-      "emailLabel": "Correo electrónico",
-      "passwordLabel": "Contraseña",
-      "submitButton": "Crear cuenta",
-      "alreadyHaveAccount": "¿Ya tienes cuenta?",
-      "loginLink": "Inicia sesión"
-    }
-  },
-  "bookmarks": {
-    "empty": "Sin marcadores todavía. ¡Añade el primero!",
-    "addButton": "Añadir marcador",
-    "form": {
-      "urlLabel": "URL",
-      "titleLabel": "Título",
-      "descriptionLabel": "Descripción",
-      "collectionLabel": "Colección",
-      "tagsLabel": "Etiquetas",
-      "submitButton": "Guardar marcador",
-      "cancelButton": "Cancelar"
-    },
-    "card": {
-      "favoriteToggle": "Marcar como favorito",
-      "deleteButton": "Eliminar",
-      "editButton": "Editar"
-    }
-  },
-  "collections": {
-    "empty": "Sin colecciones todavía.",
-    "addButton": "Nueva colección",
-    "form": {
-      "nameLabel": "Nombre",
-      "descriptionLabel": "Descripción",
-      "isPublicLabel": "Hacer pública",
-      "parentLabel": "Colección padre",
-      "submitButton": "Guardar",
-      "cancelButton": "Cancelar"
-    }
-  },
-  "errors": {
-    "INVALID_CREDENTIALS": "Email o contraseña incorrectos.",
-    "EMAIL_ALREADY_EXISTS": "Este email ya está registrado.",
-    "INVALID_REFRESH_TOKEN": "Tu sesión no es válida. Inicia sesión de nuevo.",
-    "REFRESH_TOKEN_EXPIRED": "Tu sesión ha expirado. Inicia sesión de nuevo.",
-    "BOOKMARK_NOT_FOUND": "Marcador no encontrado.",
-    "COLLECTION_NOT_FOUND": "Colección no encontrada.",
-    "COLLECTION_NESTING_NOT_ALLOWED": "Una sub-colección no puede contener otras sub-colecciones.",
-    "UNAUTHORIZED": "Debes iniciar sesión para hacer eso.",
-    "FORBIDDEN": "No tienes permiso para hacer eso.",
-    "NOT_FOUND": "Recurso no encontrado.",
-    "VALIDATION_ERROR": "Revisa el formulario e inténtalo de nuevo.",
-    "INTERNAL_ERROR": "Algo salió mal. Inténtalo de nuevo."
-  },
-  "validation": {
-    "required": "Este campo es obligatorio.",
-    "invalidEmail": "Introduce un email válido.",
-    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres.",
-    "passwordMaxLength": "La contraseña no puede superar 72 caracteres.",
-    "invalidUrl": "Introduce una URL válida.",
-    "nameTooLong": "El nombre es demasiado largo.",
-    "descriptionTooLong": "La descripción es demasiado larga."
-  },
-  "common": {
-    "loading": "Cargando...",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "delete": "Eliminar",
-    "edit": "Editar",
-    "search": "Buscar",
-    "noResults": "Sin resultados."
-  }
+   "auth": {
+      "login": {
+         "title": "Iniciar sesión",
+         "subtitle": "Bienvenido de vuelta",
+         "emailLabel": "Correo electrónico",
+         "passwordLabel": "Contraseña",
+         "submitButton": "Iniciar sesión",
+         "noAccount": "¿No tienes cuenta?",
+         "registerLink": "Créala aquí"
+      },
+      "register": {
+         "title": "Crear cuenta",
+         "nameLabel": "Nombre",
+         "emailLabel": "Correo electrónico",
+         "passwordLabel": "Contraseña",
+         "submitButton": "Crear cuenta",
+         "alreadyHaveAccount": "¿Ya tienes cuenta?",
+         "loginLink": "Inicia sesión"
+      }
+   },
+   "bookmarks": {
+      "empty": "Sin marcadores todavía. ¡Añade el primero!",
+      "addButton": "Añadir marcador",
+      "form": {
+         "urlLabel": "URL",
+         "titleLabel": "Título",
+         "descriptionLabel": "Descripción",
+         "collectionLabel": "Colección",
+         "tagsLabel": "Etiquetas",
+         "submitButton": "Guardar marcador",
+         "cancelButton": "Cancelar"
+      },
+      "card": {
+         "favoriteToggle": "Marcar como favorito",
+         "deleteButton": "Eliminar",
+         "editButton": "Editar"
+      }
+   },
+   "collections": {
+      "empty": "Sin colecciones todavía.",
+      "addButton": "Nueva colección",
+      "form": {
+         "nameLabel": "Nombre",
+         "descriptionLabel": "Descripción",
+         "isPublicLabel": "Hacer pública",
+         "parentLabel": "Colección padre",
+         "submitButton": "Guardar",
+         "cancelButton": "Cancelar"
+      }
+   },
+   "errors": {
+      "INVALID_CREDENTIALS": "Email o contraseña incorrectos.",
+      "EMAIL_ALREADY_EXISTS": "Este email ya está registrado.",
+      "INVALID_REFRESH_TOKEN": "Tu sesión no es válida. Inicia sesión de nuevo.",
+      "REFRESH_TOKEN_EXPIRED": "Tu sesión ha expirado. Inicia sesión de nuevo.",
+      "BOOKMARK_NOT_FOUND": "Marcador no encontrado.",
+      "COLLECTION_NOT_FOUND": "Colección no encontrada.",
+      "COLLECTION_NESTING_NOT_ALLOWED": "Una sub-colección no puede contener otras sub-colecciones.",
+      "UNAUTHORIZED": "Debes iniciar sesión para hacer eso.",
+      "FORBIDDEN": "No tienes permiso para hacer eso.",
+      "NOT_FOUND": "Recurso no encontrado.",
+      "VALIDATION_ERROR": "Revisa el formulario e inténtalo de nuevo.",
+      "INTERNAL_ERROR": "Algo salió mal. Inténtalo de nuevo."
+   },
+   "validation": {
+      "required": "Este campo es obligatorio.",
+      "invalidEmail": "Introduce un email válido.",
+      "passwordMinLength": "La contraseña debe tener al menos 8 caracteres.",
+      "passwordMaxLength": "La contraseña no puede superar 72 caracteres.",
+      "invalidUrl": "Introduce una URL válida.",
+      "nameTooLong": "El nombre es demasiado largo.",
+      "descriptionTooLong": "La descripción es demasiado larga."
+   },
+   "common": {
+      "loading": "Cargando...",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "search": "Buscar",
+      "noResults": "Sin resultados."
+   }
 }

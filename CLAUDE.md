@@ -129,11 +129,11 @@ Core entities: `User`, `Bookmark`, `Collection`, `Tag`
 
 ## Development Phases (Commit Structure)
 
-| Phase | Scope                                                                 | Estado |
-| ----- | --------------------------------------------------------------------- | ------ |
-| 1     | Monorepo bootstrap — Turborepo, pnpm workspaces, tsconfig, ESLint     | ✅ |
+| Phase | Scope                                                                 | Estado                                                                                                                                          |
+| ----- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Monorepo bootstrap — Turborepo, pnpm workspaces, tsconfig, ESLint     | ✅                                                                                                                                              |
 | 2     | `packages/types` — Zod schemas for User, Bookmark, Collection         | ⚠️ Incompleto — faltan: RefreshTokenSchema, UpdateUserSchema, SearchBookmarksSchema, PaginationSchema, tipos de respuesta con campos scrapeados |
-| 3     | Prisma schema — all models and relations                              | 🔄 En progreso |
+| 3     | Prisma schema — all models and relations                              | 🔄 En progreso                                                                                                                                  |
 | 4     | First migration + seed script                                         |
 | 5     | NestJS bootstrap — health check, config module, env validation        |
 | 6     | Auth module (BE) — register, login, JWT, Passport, guards             |

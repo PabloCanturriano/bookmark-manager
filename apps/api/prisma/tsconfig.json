@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": ["node"]
-  },
-  "include": ["seed.ts"]
+   "compilerOptions": {
+      "module": "commonjs",
+      "target": "ES2022",
+      "lib": ["ES2022"],
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "types": ["node"]
+   },
+   "include": ["seed.ts"]
 }
