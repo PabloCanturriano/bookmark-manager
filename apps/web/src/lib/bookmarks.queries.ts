@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CreateBookmarkDto } from '@bookmark-manager/types';
 import { api } from './axios';
 
 interface Tag {
@@ -36,6 +37,15 @@ export const useBookmarks = (params: Record<string, unknown> = {}) =>
       queryKey: bookmarkKeys.list(params),
       queryFn: () => api.get<BookmarkPage>('/bookmarks', { params }).then((r) => r.data),
    });
+
+export const useCreateBookmark = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: (dto: CreateBookmarkDto) =>
+         api.post<Bookmark>('/bookmarks', dto).then((r) => r.data),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
 
 export const useToggleFavorite = () => {
    const qc = useQueryClient();

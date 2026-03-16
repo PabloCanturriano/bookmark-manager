@@ -5,6 +5,7 @@ import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useState } from "react";
 import { BookmarkList } from "@/components/dashboard/BookmarkList";
 import { BookmarkSection } from "@/components/dashboard/BookmarkSection";
+import { CreateBookmarkModal } from "@/components/dashboard/CreateBookmarkModal";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { useBookmarks } from "@/lib/bookmarks.queries";
@@ -20,6 +21,7 @@ export function DashboardContent() {
     parseAsStringLiteral(TABS).withDefault("home"),
   );
   const [search, setSearch] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
 
   const { data: recent, isLoading: loadingRecent } = useBookmarks({ limit: 8 });
   const { data: favourites, isLoading: loadingFavourites } = useBookmarks({
@@ -38,7 +40,9 @@ export function DashboardContent() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onSearch={setSearch}
+        onAdd={() => setAddOpen(true)}
       />
+      <CreateBookmarkModal open={addOpen} onClose={() => setAddOpen(false)} />
 
       <Content style={{ maxWidth: 1280, width: "100%", margin: "0 auto", padding: "24px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
         {activeTab === "home" && (

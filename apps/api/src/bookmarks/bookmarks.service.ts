@@ -26,6 +26,7 @@ export class BookmarksService {
             ogImage: scraped.ogImage,
             favicon: scraped.favicon,
             userId,
+            isFavorited: dto.isFavorited ?? false,
             collectionId: dto.collectionId ?? null,
             tags: dto.tags?.length
                ? {
@@ -39,7 +40,6 @@ export class BookmarksService {
          include: { tags: true },
       });
 
-      // Update full-text search vector
       await this.updateSearchVector(bookmark.id);
 
       return bookmark;

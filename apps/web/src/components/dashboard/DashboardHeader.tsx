@@ -8,7 +8,8 @@ import {
    SearchOutlined,
    UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Dropdown, Input, InputRef, Layout, Menu } from 'antd';
+import { Avatar, Button, Dropdown, Input, InputRef, Layout, Menu } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { api } from '@/lib/axios';
@@ -20,6 +21,7 @@ interface Props {
    activeTab: 'home' | 'all' | 'bin';
    onTabChange: (tab: 'home' | 'all' | 'bin') => void;
    onSearch: (q: string) => void;
+   onAdd: () => void;
 }
 
 const NAV_ITEMS = [
@@ -28,7 +30,7 @@ const NAV_ITEMS = [
    { key: 'bin', label: 'Bin', icon: <DeleteOutlined /> },
 ];
 
-export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
+export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Props) {
    const router = useRouter();
    const { user, clearUser } = useAuthStore();
    const searchRef = useRef<InputRef>(null);
@@ -91,6 +93,14 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
          />
 
          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+            <Button
+               type="primary"
+               icon={<PlusOutlined />}
+               onClick={onAdd}
+               style={{ background: '#6366f1', borderColor: '#6366f1' }}
+            >
+               Add
+            </Button>
             <Input
                ref={searchRef}
                prefix={<SearchOutlined style={{ color: '#9ca3af' }} />}
