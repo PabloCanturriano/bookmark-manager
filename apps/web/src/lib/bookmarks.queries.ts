@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './axios';
 
 interface Tag {
@@ -36,3 +36,20 @@ export const useBookmarks = (params: Record<string, unknown> = {}) =>
       queryKey: bookmarkKeys.list(params),
       queryFn: () => api.get<BookmarkPage>('/bookmarks', { params }).then((r) => r.data),
    });
+
+export const useToggleFavorite = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: ({ id, isFavorited }: { id: string; isFavorited: boolean }) =>
+         api.patch(`/bookmarks/${id}`, { isFavorited: !isFavorited }).then((r) => r.data),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
+
+export const useDeleteBookmark = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: (id: string) => api.delete(`/bookmarks/${id}`),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
