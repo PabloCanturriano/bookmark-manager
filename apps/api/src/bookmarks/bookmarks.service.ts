@@ -1,158 +1,158 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import {
-  CreateBookmarkDto,
-  ListBookmarksDto,
-  SearchBookmarksDto,
-  UpdateBookmarkDto,
-} from "@bookmark-manager/types";
-import { PrismaService } from "../prisma/prisma.service";
-import { ScraperService } from "./scraper.service";
+   CreateBookmarkDto,
+   ListBookmarksDto,
+   SearchBookmarksDto,
+   UpdateBookmarkDto,
+} from '@bookmark-manager/types';
+import { PrismaService } from '../prisma/prisma.service';
+import { ScraperService } from './scraper.service';
 
 @Injectable()
 export class BookmarksService {
-  constructor(
-    private prisma: PrismaService,
-    private scraper: ScraperService,
-  ) {}
+   constructor(
+      private prisma: PrismaService,
+      private scraper: ScraperService,
+   ) {}
 
-  async create(userId: string, dto: CreateBookmarkDto) {
-    const scraped = await this.scraper.scrape(dto.url);
+   async create(userId: string, dto: CreateBookmarkDto) {
+      const scraped = await this.scraper.scrape(dto.url);
 
-    const bookmark = await this.prisma.bookmark.create({
-      data: {
-        url: dto.url,
-        title: dto.title ?? scraped.title,
-        description: dto.description ?? scraped.description,
-        ogImage: scraped.ogImage,
-        favicon: scraped.favicon,
-        userId,
-        collectionId: dto.collectionId ?? null,
-        tags: dto.tags?.length
-          ? {
-              connectOrCreate: dto.tags.map((name) => ({
-                where: { name_userId: { name, userId } },
-                create: { name, userId },
-              })),
-            }
-          : undefined,
-      },
-      include: { tags: true },
-    });
+      const bookmark = await this.prisma.bookmark.create({
+         data: {
+            url: dto.url,
+            title: dto.title ?? scraped.title,
+            description: dto.description ?? scraped.description,
+            ogImage: scraped.ogImage,
+            favicon: scraped.favicon,
+            userId,
+            collectionId: dto.collectionId ?? null,
+            tags: dto.tags?.length
+               ? {
+                    connectOrCreate: dto.tags.map((name) => ({
+                       where: { name_userId: { name, userId } },
+                       create: { name, userId },
+                    })),
+                 }
+               : undefined,
+         },
+         include: { tags: true },
+      });
 
-    // Update full-text search vector
-    await this.updateSearchVector(bookmark.id);
+      // Update full-text search vector
+      await this.updateSearchVector(bookmark.id);
 
-    return bookmark;
-  }
+      return bookmark;
+   }
 
-  async findAll(userId: string, query: ListBookmarksDto) {
-    const { page, limit, collectionId, tag, favorited } = query;
-    const skip = (page - 1) * limit;
+   async findAll(userId: string, query: ListBookmarksDto) {
+      const { page, limit, collectionId, tag, favorited } = query;
+      const skip = (page - 1) * limit;
 
-    const where = {
-      userId,
-      ...(collectionId !== undefined && { collectionId }),
-      ...(favorited !== undefined && { isFavorited: favorited }),
-      ...(tag && { tags: { some: { name: tag } } }),
-    };
+      const where = {
+         userId,
+         ...(collectionId !== undefined && { collectionId }),
+         ...(favorited !== undefined && { isFavorited: favorited }),
+         ...(tag && { tags: { some: { name: tag } } }),
+      };
 
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.bookmark.findMany({
-        where,
-        include: { tags: true, collection: { select: { id: true, name: true } } },
-        orderBy: { createdAt: "desc" },
-        skip,
-        take: limit,
-      }),
-      this.prisma.bookmark.count({ where }),
-    ]);
+      const [items, total] = await this.prisma.$transaction([
+         this.prisma.bookmark.findMany({
+            where,
+            include: { tags: true, collection: { select: { id: true, name: true } } },
+            orderBy: { createdAt: 'desc' },
+            skip,
+            take: limit,
+         }),
+         this.prisma.bookmark.count({ where }),
+      ]);
 
-    return { items, total, page, limit };
-  }
+      return { items, total, page, limit };
+   }
 
-  async findOne(userId: string, id: string) {
-    const bookmark = await this.prisma.bookmark.findUnique({
-      where: { id },
-      include: { tags: true, collection: { select: { id: true, name: true } } },
-    });
+   async findOne(userId: string, id: string) {
+      const bookmark = await this.prisma.bookmark.findUnique({
+         where: { id },
+         include: { tags: true, collection: { select: { id: true, name: true } } },
+      });
 
-    if (!bookmark) throw new NotFoundException("Bookmark not found");
-    if (bookmark.userId !== userId) throw new ForbiddenException();
+      if (!bookmark) throw new NotFoundException('Bookmark not found');
+      if (bookmark.userId !== userId) throw new ForbiddenException();
 
-    return bookmark;
-  }
+      return bookmark;
+   }
 
-  async update(userId: string, id: string, dto: UpdateBookmarkDto) {
-    await this.findOne(userId, id);
+   async update(userId: string, id: string, dto: UpdateBookmarkDto) {
+      await this.findOne(userId, id);
 
-    const bookmark = await this.prisma.bookmark.update({
-      where: { id },
-      data: {
-        ...(dto.title !== undefined && { title: dto.title }),
-        ...(dto.description !== undefined && { description: dto.description }),
-        ...(dto.collectionId !== undefined && { collectionId: dto.collectionId }),
-        ...(dto.isFavorited !== undefined && { isFavorited: dto.isFavorited }),
-        ...(dto.tags && {
-          tags: {
-            set: [],
-            connectOrCreate: dto.tags.map((name) => ({
-              where: { name_userId: { name, userId } },
-              create: { name, userId },
-            })),
-          },
-        }),
-      },
-      include: { tags: true },
-    });
+      const bookmark = await this.prisma.bookmark.update({
+         where: { id },
+         data: {
+            ...(dto.title !== undefined && { title: dto.title }),
+            ...(dto.description !== undefined && { description: dto.description }),
+            ...(dto.collectionId !== undefined && { collectionId: dto.collectionId }),
+            ...(dto.isFavorited !== undefined && { isFavorited: dto.isFavorited }),
+            ...(dto.tags && {
+               tags: {
+                  set: [],
+                  connectOrCreate: dto.tags.map((name) => ({
+                     where: { name_userId: { name, userId } },
+                     create: { name, userId },
+                  })),
+               },
+            }),
+         },
+         include: { tags: true },
+      });
 
-    if (dto.title || dto.description) {
-      await this.updateSearchVector(id);
-    }
+      if (dto.title || dto.description) {
+         await this.updateSearchVector(id);
+      }
 
-    return bookmark;
-  }
+      return bookmark;
+   }
 
-  async remove(userId: string, id: string) {
-    await this.findOne(userId, id);
-    await this.prisma.bookmark.delete({ where: { id } });
-  }
+   async remove(userId: string, id: string) {
+      await this.findOne(userId, id);
+      await this.prisma.bookmark.delete({ where: { id } });
+   }
 
-  async search(userId: string, query: SearchBookmarksDto) {
-    const { q, page, limit } = query;
-    const skip = (page - 1) * limit;
+   async search(userId: string, query: SearchBookmarksDto) {
+      const { q, page, limit } = query;
+      const skip = (page - 1) * limit;
 
-    const [items, total] = await this.prisma.$transaction([
-      this.prisma.$queryRaw<{ id: string }[]>`
+      const [items, total] = await this.prisma.$transaction([
+         this.prisma.$queryRaw<{ id: string }[]>`
         SELECT id FROM "Bookmark"
         WHERE "userId" = ${userId}
           AND "searchVector" @@ plainto_tsquery('english', ${q})
         ORDER BY ts_rank("searchVector", plainto_tsquery('english', ${q})) DESC
         LIMIT ${limit} OFFSET ${skip}
       `,
-      this.prisma.$queryRaw<[{ count: bigint }]>`
+         this.prisma.$queryRaw<[{ count: bigint }]>`
         SELECT count(*) FROM "Bookmark"
         WHERE "userId" = ${userId}
           AND "searchVector" @@ plainto_tsquery('english', ${q})
       `,
-    ]);
+      ]);
 
-    const ids = items.map((r) => r.id);
-    const bookmarks = await this.prisma.bookmark.findMany({
-      where: { id: { in: ids } },
-      include: { tags: true },
-      orderBy: { createdAt: "desc" },
-    });
+      const ids = items.map((r) => r.id);
+      const bookmarks = await this.prisma.bookmark.findMany({
+         where: { id: { in: ids } },
+         include: { tags: true },
+         orderBy: { createdAt: 'desc' },
+      });
 
-    return {
-      items: bookmarks,
-      total: Number(total[0].count),
-      page,
-      limit,
-    };
-  }
+      return {
+         items: bookmarks,
+         total: Number(total[0].count),
+         page,
+         limit,
+      };
+   }
 
-  private async updateSearchVector(id: string) {
-    await this.prisma.$executeRaw`
+   private async updateSearchVector(id: string) {
+      await this.prisma.$executeRaw`
       UPDATE "Bookmark"
       SET "searchVector" = to_tsvector(
         'english',
@@ -160,5 +160,5 @@ export class BookmarksService {
       )
       WHERE id = ${id}
     `;
-  }
+   }
 }
