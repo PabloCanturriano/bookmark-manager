@@ -8,11 +8,13 @@ import {
    SearchOutlined,
    UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Dropdown, Input, InputRef } from 'antd';
+import { Avatar, Dropdown, Input, InputRef, Layout, Menu } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { api } from '@/lib/axios';
 import { useAuthStore } from '@/store/auth.store';
+
+const { Header } = Layout;
 
 interface Props {
    activeTab: 'home' | 'all' | 'bin';
@@ -20,11 +22,11 @@ interface Props {
    onSearch: (q: string) => void;
 }
 
-const TABS = [
+const NAV_ITEMS = [
    { key: 'home', label: 'Home', icon: <HomeOutlined /> },
    { key: 'all', label: 'All Bookmarks', icon: <BookOutlined /> },
    { key: 'bin', label: 'Bin', icon: <DeleteOutlined /> },
-] as const;
+];
 
 export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
    const router = useRouter();
@@ -49,37 +51,53 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
    };
 
    return (
-      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-100">
-         <div className="flex items-center gap-6">
-            <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-               B
-            </div>
-            <nav className="flex items-center gap-1">
-               {TABS.map(({ key, label, icon }) => (
-                  <button
-                     key={key}
-                     onClick={() => onTabChange(key)}
-                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                        activeTab === key
-                           ? 'text-indigo-600 border-b-2 border-indigo-500'
-                           : 'text-gray-500 hover:text-gray-700'
-                     }`}
-                  >
-                     {icon}
-                     {label}
-                  </button>
-               ))}
-            </nav>
+      <Header
+         style={{
+            background: '#fff',
+            borderBottom: '1px solid #f0f0f0',
+            padding: '0 24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 24,
+            position: 'sticky',
+            top: 0,
+            zIndex: 100,
+         }}
+      >
+         <div
+            style={{
+               width: 32,
+               height: 32,
+               background: '#6366f1',
+               borderRadius: 8,
+               display: 'flex',
+               alignItems: 'center',
+               justifyContent: 'center',
+               color: '#fff',
+               fontWeight: 700,
+               fontSize: 14,
+               flexShrink: 0,
+            }}
+         >
+            B
          </div>
 
-         <div className="flex items-center gap-3">
+         <Menu
+            mode="horizontal"
+            selectedKeys={[activeTab]}
+            items={NAV_ITEMS}
+            onClick={({ key }) => onTabChange(key as Props['activeTab'])}
+            style={{ flex: 1, border: 'none', minWidth: 0 }}
+         />
+
+         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
             <Input
                ref={searchRef}
-               prefix={<SearchOutlined className="text-gray-400" />}
+               prefix={<SearchOutlined style={{ color: '#9ca3af' }} />}
                placeholder="Search / Ctrl + K"
-               suffix={<span className="text-xs text-gray-300">⌘K</span>}
+               suffix={<span style={{ fontSize: 11, color: '#d1d5db' }}>⌘K</span>}
                onChange={(e) => onSearch(e.target.value)}
-               className="w-64 rounded-full bg-gray-50"
+               style={{ width: 256, borderRadius: 999 }}
                variant="filled"
             />
             <Dropdown
@@ -87,7 +105,9 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
                   items: [
                      {
                         key: 'email',
-                        label: <span className="text-gray-500 text-xs">{user?.email}</span>,
+                        label: (
+                           <span style={{ color: '#6b7280', fontSize: 12 }}>{user?.email}</span>
+                        ),
                         disabled: true,
                      },
                      { type: 'divider' },
@@ -102,9 +122,12 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch }: Props) {
                }}
                placement="bottomRight"
             >
-               <Avatar icon={<UserOutlined />} className="cursor-pointer bg-indigo-500" />
+               <Avatar
+                  icon={<UserOutlined />}
+                  style={{ cursor: 'pointer', background: '#6366f1' }}
+               />
             </Dropdown>
          </div>
-      </header>
+      </Header>
    );
 }

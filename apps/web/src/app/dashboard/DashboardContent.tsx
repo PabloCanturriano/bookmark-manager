@@ -1,5 +1,6 @@
 "use client";
 
+import { Layout } from "antd";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useState } from "react";
 import { BookmarkList } from "@/components/dashboard/BookmarkList";
@@ -7,6 +8,8 @@ import { BookmarkSection } from "@/components/dashboard/BookmarkSection";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { useBookmarks } from "@/lib/bookmarks.queries";
+
+const { Content } = Layout;
 
 const TABS = ["home", "all", "bin"] as const;
 type Tab = (typeof TABS)[number];
@@ -30,14 +33,14 @@ export function DashboardContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Layout style={{ minHeight: "100vh", background: "#f9fafb" }}>
       <DashboardHeader
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onSearch={setSearch}
       />
 
-      <main className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-6">
+      <Content style={{ maxWidth: 1280, width: "100%", margin: "0 auto", padding: "24px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
         {activeTab === "home" && (
           <>
             <StatsCards stats={stats} isLoading={loadingRecent} />
@@ -66,7 +69,7 @@ export function DashboardContent() {
             Bin — coming soon
           </div>
         )}
-      </main>
-    </div>
+      </Content>
+    </Layout>
   );
 }
