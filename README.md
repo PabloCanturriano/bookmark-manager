@@ -90,14 +90,14 @@ When a URL is saved, the backend automatically scrapes its metadata (title, desc
 ### Prerequisites
 
 - Node.js 20+
-- pnpm 8+
+- pnpm 9+
 - PostgreSQL 14+
 
 ### Setup
 
 ```bash
 # 1. Clone and install
-git clone https://github.com/your-username/bookmark-manager.git
+git clone <repo-url>
 cd bookmark-manager
 pnpm install
 
@@ -124,7 +124,11 @@ App runs at:
 docker compose up
 ```
 
-This starts PostgreSQL, runs migrations, and boots both apps.
+This starts PostgreSQL and boots both apps. Run migrations separately after the DB is up:
+
+```bash
+pnpm --filter=api db:migrate
+```
 
 ### Useful commands
 
@@ -154,11 +158,6 @@ assets/
 
 ---
 
-## Deployment
+## CI/CD
 
-| Service | Platform |
-|---------|----------|
-| `apps/web` | Vercel |
-| `apps/api` | Railway |
-| PostgreSQL | Railway (managed) |
-| CI/CD | GitHub Actions — lint + test + build on every PR |
+GitHub Actions runs lint, tests, and build on every push and pull request to `main`.
