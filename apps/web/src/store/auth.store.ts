@@ -7,7 +7,7 @@ interface User {
 
 interface AuthState {
    user: User | null;
-   setUser: (user: User) => void;
+   setUser: (_user: User) => void;
    clearUser: () => void;
 }
 

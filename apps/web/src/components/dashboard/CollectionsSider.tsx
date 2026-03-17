@@ -22,7 +22,7 @@ export type DashboardView = null | '__favourites__' | '__bin__' | string;
 
 interface Props {
    view: DashboardView;
-   onViewChange: (view: DashboardView) => void;
+   onViewChange: (_view: DashboardView) => void;
 }
 
 interface FormValues {

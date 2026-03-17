@@ -10,7 +10,7 @@ import { useAuthStore } from '@/store/auth.store';
 const { Header } = Layout;
 
 interface Props {
-   onSearch: (q: string) => void;
+   onSearch: (_q: string) => void;
    onAdd: () => void;
 }
 
