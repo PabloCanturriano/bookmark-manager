@@ -1,10 +1,16 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+   ConflictException,
+   ForbiddenException,
+   Injectable,
+   NotFoundException,
+} from '@nestjs/common';
 import {
    CreateBookmarkDto,
    ListBookmarksDto,
    SearchBookmarksDto,
    UpdateBookmarkDto,
 } from '@bookmark-manager/types';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScraperService } from './scraper.service';
 
@@ -18,22 +24,29 @@ export class BookmarksService {
    async create(userId: string, dto: CreateBookmarkDto) {
       const scraped = await this.scraper.scrape(dto.url);
 
-      const bookmark = await this.prisma.bookmark.create({
-         data: {
-            url: dto.url,
-            title: dto.title ?? scraped.title,
-            description: dto.description ?? scraped.description,
-            ogImage: scraped.ogImage,
-            favicon: scraped.favicon,
-            userId,
-            isFavorited: dto.isFavorited ?? false,
-            collectionId: dto.collectionId ?? null,
-         },
-      });
+      try {
+         const bookmark = await this.prisma.bookmark.create({
+            data: {
+               url: dto.url,
+               title: dto.title ?? scraped.title,
+               description: dto.description ?? scraped.description,
+               ogImage: scraped.ogImage,
+               favicon: scraped.favicon,
+               userId,
+               isFavorited: dto.isFavorited ?? false,
+               collectionId: dto.collectionId ?? null,
+            },
+         });
 
-      await this.updateSearchVector(bookmark.id);
+         await this.updateSearchVector(bookmark.id);
 
-      return bookmark;
+         return bookmark;
+      } catch (err) {
+         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+            throw new ConflictException('You already saved this URL');
+         }
+         throw err;
+      }
    }
 
    async findAll(userId: string, query: ListBookmarksDto) {

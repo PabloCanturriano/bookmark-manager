@@ -61,7 +61,11 @@ export const useCreateBookmark = () => {
          qc.invalidateQueries({ queryKey: bookmarkKeys.all });
          void message.success('Bookmark added');
       },
-      onError: () => void message.error('Failed to add bookmark'),
+      onError: (err: unknown) => {
+         const msg =
+            (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+         void message.error(msg ?? 'Failed to add bookmark');
+      },
    });
 };
 

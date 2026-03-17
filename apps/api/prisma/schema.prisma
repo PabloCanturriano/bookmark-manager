@@ -82,7 +82,8 @@ model Bookmark {
 
   searchVector Unsupported("tsvector")?
 
-  @@index([userId])
+  @@unique([userId, url])
+  @@index([userId, createdAt(sort: Desc)])
   @@index([collectionId])
   @@index([isFavorited])
   @@index([deletedAt])
