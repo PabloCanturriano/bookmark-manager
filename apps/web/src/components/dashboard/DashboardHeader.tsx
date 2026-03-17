@@ -1,15 +1,7 @@
 'use client';
 
-import {
-   BookOutlined,
-   DeleteOutlined,
-   HomeOutlined,
-   LogoutOutlined,
-   SearchOutlined,
-   UserOutlined,
-} from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Input, InputRef, Layout, Menu } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { LogoutOutlined, PlusOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Dropdown, Input, InputRef, Layout } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { api } from '@/lib/axios';
@@ -18,19 +10,11 @@ import { useAuthStore } from '@/store/auth.store';
 const { Header } = Layout;
 
 interface Props {
-   activeTab: 'home' | 'all' | 'bin';
-   onTabChange: (tab: 'home' | 'all' | 'bin') => void;
    onSearch: (q: string) => void;
    onAdd: () => void;
 }
 
-const NAV_ITEMS = [
-   { key: 'home', label: 'Home', icon: <HomeOutlined /> },
-   { key: 'all', label: 'All Bookmarks', icon: <BookOutlined /> },
-   { key: 'bin', label: 'Bin', icon: <DeleteOutlined /> },
-];
-
-export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Props) {
+export function DashboardHeader({ onSearch, onAdd }: Props) {
    const router = useRouter();
    const { user, clearUser } = useAuthStore();
    const searchRef = useRef<InputRef>(null);
@@ -60,12 +44,13 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Pro
             padding: '0 24px',
             display: 'flex',
             alignItems: 'center',
-            gap: 24,
+            gap: 16,
             position: 'sticky',
             top: 0,
             zIndex: 100,
          }}
       >
+         {/* Logo */}
          <div
             style={{
                width: 32,
@@ -84,23 +69,10 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Pro
             B
          </div>
 
-         <Menu
-            mode="horizontal"
-            selectedKeys={[activeTab]}
-            items={NAV_ITEMS}
-            onClick={({ key }) => onTabChange(key as Props['activeTab'])}
-            style={{ flex: 1, border: 'none', minWidth: 0 }}
-         />
+         <div style={{ flex: 1 }} />
 
-         <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            <Button
-               type="primary"
-               icon={<PlusOutlined />}
-               onClick={onAdd}
-               style={{ background: '#6366f1', borderColor: '#6366f1' }}
-            >
-               Add
-            </Button>
+         {/* Actions */}
+         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Input
                ref={searchRef}
                prefix={<SearchOutlined style={{ color: '#9ca3af' }} />}
@@ -110,14 +82,20 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Pro
                style={{ width: 256, borderRadius: 999 }}
                variant="filled"
             />
+            <Button
+               type="primary"
+               icon={<PlusOutlined />}
+               onClick={onAdd}
+               style={{ background: '#6366f1', borderColor: '#6366f1' }}
+            >
+               Add
+            </Button>
             <Dropdown
                menu={{
                   items: [
                      {
                         key: 'email',
-                        label: (
-                           <span style={{ color: '#6b7280', fontSize: 12 }}>{user?.email}</span>
-                        ),
+                        label: <span style={{ color: '#6b7280', fontSize: 12 }}>{user?.email}</span>,
                         disabled: true,
                      },
                      { type: 'divider' },
@@ -132,10 +110,7 @@ export function DashboardHeader({ activeTab, onTabChange, onSearch, onAdd }: Pro
                }}
                placement="bottomRight"
             >
-               <Avatar
-                  icon={<UserOutlined />}
-                  style={{ cursor: 'pointer', background: '#6366f1' }}
-               />
+               <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer', background: '#6366f1' }} />
             </Dropdown>
          </div>
       </Header>

@@ -30,6 +30,7 @@ interface BookmarkPage {
 export const bookmarkKeys = {
    all: ['bookmarks'] as const,
    list: (params: Record<string, unknown>) => ['bookmarks', 'list', params] as const,
+   bin: ['bookmarks', 'bin'] as const,
 };
 
 export const useBookmarks = (params: Record<string, unknown> = {}) =>
@@ -77,6 +78,37 @@ export const useDeleteBookmark = () => {
    const qc = useQueryClient();
    return useMutation({
       mutationFn: (id: string) => api.delete(`/bookmarks/${id}`),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
+
+export const useBinBookmarks = () =>
+   useQuery({
+      queryKey: bookmarkKeys.bin,
+      queryFn: () =>
+         api.get<{ items: Bookmark[]; total: number }>('/bookmarks/bin').then((r) => r.data),
+   });
+
+export const useRestoreBookmark = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: (id: string) => api.patch(`/bookmarks/${id}/restore`, {}).then((r) => r.data),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
+
+export const usePermanentDeleteBookmark = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: (id: string) => api.delete(`/bookmarks/${id}/permanent`),
+      onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
+   });
+};
+
+export const useEmptyBin = () => {
+   const qc = useQueryClient();
+   return useMutation({
+      mutationFn: () => api.delete('/bookmarks/bin'),
       onSuccess: () => qc.invalidateQueries({ queryKey: bookmarkKeys.all }),
    });
 };

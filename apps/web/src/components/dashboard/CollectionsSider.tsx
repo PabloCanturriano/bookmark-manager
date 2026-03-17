@@ -1,17 +1,24 @@
 'use client';
 
-import { DeleteOutlined, FolderOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Layout, Menu, Modal, Popconfirm, Skeleton, Typography } from 'antd';
+import {
+   DeleteOutlined,
+   FolderOutlined,
+   HeartOutlined,
+   PlusOutlined,
+   UnorderedListOutlined,
+} from '@ant-design/icons';
+import { Button, Form, Input, Layout, Menu, Modal, Popconfirm, Skeleton } from 'antd';
 import { CreateCollectionSchema } from '@bookmark-manager/types';
 import { useState } from 'react';
-import { useCreateCollection, useDeleteCollection, useCollections } from '@/lib/collections.queries';
+import { useCollections, useCreateCollection, useDeleteCollection } from '@/lib/collections.queries';
 
 const { Sider } = Layout;
-const { Text } = Typography;
+
+export type DashboardView = null | '__favourites__' | '__bin__' | string;
 
 interface Props {
-   selectedId: string | null;
-   onSelect: (id: string | null) => void;
+   view: DashboardView;
+   onViewChange: (view: DashboardView) => void;
 }
 
 interface FormValues {
@@ -19,7 +26,7 @@ interface FormValues {
    isPublic: boolean;
 }
 
-export function CollectionsSider({ selectedId, onSelect }: Props) {
+export function CollectionsSider({ view, onViewChange }: Props) {
    const { data: collections, isLoading } = useCollections();
    const { mutate: createCollection, isPending: creating } = useCreateCollection();
    const { mutate: deleteCollection } = useDeleteCollection();
@@ -35,42 +42,57 @@ export function CollectionsSider({ selectedId, onSelect }: Props) {
       });
    };
 
+   const selectedKey = view ?? '__all__';
+
    const menuItems = [
       {
          key: '__all__',
-         icon: <FolderOutlined />,
-         label: 'All bookmarks',
+         icon: <UnorderedListOutlined />,
+         label: 'Bookmarks',
       },
-      ...(collections ?? []).map((c) => ({
-         key: c.id,
-         icon: <FolderOutlined />,
-         label: (
-            <div className="flex items-center justify-between group">
-               <span className="truncate">{c.name}</span>
-               <Popconfirm
-                  title="Delete collection?"
-                  description="Bookmarks will not be deleted."
-                  onConfirm={(e) => {
-                     e?.stopPropagation();
-                     deleteCollection(c.id);
-                     if (selectedId === c.id) onSelect(null);
-                  }}
-                  okText="Delete"
-                  okButtonProps={{ danger: true }}
-                  cancelText="Cancel"
-               >
-                  <Button
-                     type="text"
-                     size="small"
-                     danger
-                     icon={<DeleteOutlined />}
-                     className="opacity-0 group-hover:opacity-100"
-                     onClick={(e) => e.stopPropagation()}
-                  />
-               </Popconfirm>
-            </div>
-         ),
-      })),
+      {
+         key: '__favourites__',
+         icon: <HeartOutlined />,
+         label: 'Favourites',
+      },
+      ...(isLoading
+         ? []
+         : (collections ?? []).map((c) => ({
+              key: c.id,
+              icon: <FolderOutlined />,
+              label: (
+                 <div className="flex items-center justify-between group">
+                    <span className="truncate">{c.name}</span>
+                    <Popconfirm
+                       title="Delete collection?"
+                       description="Bookmarks will not be deleted."
+                       onConfirm={(e) => {
+                          e?.stopPropagation();
+                          deleteCollection(c.id);
+                          if (view === c.id) onViewChange(null);
+                       }}
+                       okText="Delete"
+                       okButtonProps={{ danger: true }}
+                       cancelText="Cancel"
+                    >
+                       <Button
+                          type="text"
+                          size="small"
+                          danger
+                          icon={<DeleteOutlined />}
+                          className="opacity-0 group-hover:opacity-100"
+                          onClick={(e) => e.stopPropagation()}
+                       />
+                    </Popconfirm>
+                 </div>
+              ),
+           }))),
+      {
+         key: '__bin__',
+         icon: <DeleteOutlined />,
+         label: 'Bin',
+         danger: true,
+      },
    ];
 
    return (
@@ -80,34 +102,28 @@ export function CollectionsSider({ selectedId, onSelect }: Props) {
             style={{
                background: '#fff',
                borderRight: '1px solid #f0f0f0',
-               padding: '16px 0',
                display: 'flex',
                flexDirection: 'column',
+               paddingTop: 16,
             }}
          >
-            <div style={{ padding: '0 16px 12px' }}>
-               <Text style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Collections
-               </Text>
-            </div>
-
             {isLoading ? (
                <div style={{ padding: '0 16px' }}>
-                  {Array.from({ length: 3 }).map((_, i) => (
+                  {Array.from({ length: 4 }).map((_, i) => (
                      <Skeleton.Input key={i} active size="small" block style={{ marginBottom: 8 }} />
                   ))}
                </div>
             ) : (
                <Menu
                   mode="inline"
-                  selectedKeys={[selectedId ?? '__all__']}
+                  selectedKeys={[selectedKey]}
                   items={menuItems}
-                  onClick={({ key }) => onSelect(key === '__all__' ? null : key)}
+                  onClick={({ key }) => onViewChange(key === '__all__' ? null : (key as DashboardView))}
                   style={{ border: 'none', flex: 1 }}
                />
             )}
 
-            <div style={{ padding: '12px 16px 0', borderTop: '1px solid #f0f0f0', marginTop: 8 }}>
+            <div style={{ padding: '12px 16px', borderTop: '1px solid #f0f0f0', marginTop: 'auto' }}>
                <Button
                   type="dashed"
                   icon={<PlusOutlined />}
@@ -136,7 +152,7 @@ export function CollectionsSider({ selectedId, onSelect }: Props) {
                initialValues={{ isPublic: false }}
                style={{ marginTop: 16 }}
             >
-               <Form.Item name="isPublic" hidden />
+               <Form.Item name="isPublic" hidden><Input /></Form.Item>
                <Form.Item
                   name="name"
                   label="Name"

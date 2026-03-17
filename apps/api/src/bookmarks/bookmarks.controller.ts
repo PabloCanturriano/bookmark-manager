@@ -43,6 +43,28 @@ export class BookmarksController {
       return this.bookmarksService.create(req.user.id, dto);
    }
 
+   @Get('bin')
+   findBin(@Req() req: AuthRequest) {
+      return this.bookmarksService.findBin(req.user.id);
+   }
+
+   @Delete('bin')
+   @HttpCode(204)
+   emptyBin(@Req() req: AuthRequest) {
+      return this.bookmarksService.emptyBin(req.user.id);
+   }
+
+   @Patch(':id/restore')
+   restore(@Req() req: AuthRequest, @Param('id') id: string) {
+      return this.bookmarksService.restore(req.user.id, id);
+   }
+
+   @Delete(':id/permanent')
+   @HttpCode(204)
+   permanentDelete(@Req() req: AuthRequest, @Param('id') id: string) {
+      return this.bookmarksService.permanentDelete(req.user.id, id);
+   }
+
    @Get('search')
    search(
       @Req() req: AuthRequest,

@@ -51,6 +51,7 @@ export class BookmarksService {
 
       const where = {
          userId,
+         deletedAt: null,
          ...(collectionId !== undefined && { collectionId }),
          ...(favorited !== undefined && { isFavorited: favorited }),
          ...(tag && { tags: { some: { name: tag } } }),
@@ -68,6 +69,15 @@ export class BookmarksService {
       ]);
 
       return { items, total, page, limit };
+   }
+
+   async findBin(userId: string) {
+      const items = await this.prisma.bookmark.findMany({
+         where: { userId, deletedAt: { not: null } },
+         include: { tags: true },
+         orderBy: { deletedAt: 'desc' },
+      });
+      return { items, total: items.length };
    }
 
    async findOne(userId: string, id: string) {
@@ -112,9 +122,35 @@ export class BookmarksService {
       return bookmark;
    }
 
-   async remove(userId: string, id: string) {
+   async softDelete(userId: string, id: string) {
+      await this.findOne(userId, id);
+      await this.prisma.bookmark.update({
+         where: { id },
+         data: { deletedAt: new Date() },
+      });
+   }
+
+   async restore(userId: string, id: string) {
+      await this.findOne(userId, id);
+      await this.prisma.bookmark.update({
+         where: { id },
+         data: { deletedAt: null },
+      });
+   }
+
+   async permanentDelete(userId: string, id: string) {
       await this.findOne(userId, id);
       await this.prisma.bookmark.delete({ where: { id } });
+   }
+
+   async emptyBin(userId: string) {
+      await this.prisma.bookmark.deleteMany({
+         where: { userId, deletedAt: { not: null } },
+      });
+   }
+
+   async remove(userId: string, id: string) {
+      await this.softDelete(userId, id);
    }
 
    async search(userId: string, query: SearchBookmarksDto) {
@@ -125,6 +161,7 @@ export class BookmarksService {
          this.prisma.$queryRaw<{ id: string }[]>`
         SELECT id FROM "Bookmark"
         WHERE "userId" = ${userId}
+          AND "deletedAt" IS NULL
           AND "searchVector" @@ plainto_tsquery('english', ${q})
         ORDER BY ts_rank("searchVector", plainto_tsquery('english', ${q})) DESC
         LIMIT ${limit} OFFSET ${skip}
@@ -132,6 +169,7 @@ export class BookmarksService {
          this.prisma.$queryRaw<[{ count: bigint }]>`
         SELECT count(*) FROM "Bookmark"
         WHERE "userId" = ${userId}
+          AND "deletedAt" IS NULL
           AND "searchVector" @@ plainto_tsquery('english', ${q})
       `,
       ]);

@@ -86,9 +86,10 @@ model Bookmark {
   ogImage String?
   favicon String?
 
-  isFavorited Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isFavorited Boolean   @default(false)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -103,4 +104,5 @@ model Bookmark {
   @@index([userId])
   @@index([collectionId])
   @@index([isFavorited])
+  @@index([deletedAt])
 }
