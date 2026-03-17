@@ -1,6 +1,5 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { BookmarksService } from './bookmarks.service';
 import { ScraperService } from './scraper.service';
@@ -97,12 +96,7 @@ describe('BookmarksService', () => {
 
       it('throws ConflictException on duplicate URL for same user', async () => {
          prismaMock.bookmark.create.mockRejectedValue(
-            Object.assign(
-               new Prisma.PrismaClientKnownRequestError('Unique constraint', {
-                  code: 'P2002',
-                  clientVersion: '6.0.0',
-               }),
-            ),
+            Object.assign(new Error('Unique constraint'), { code: 'P2002' }),
          );
 
          await expect(service.create('user-1', { url: 'https://nestjs.com' })).rejects.toThrow(

@@ -42,7 +42,7 @@ export class BookmarksService {
 
          return bookmark;
       } catch (err) {
-         if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+         if ((err as Prisma.PrismaClientKnownRequestError)?.code === 'P2002') {
             throw new ConflictException('You already saved this URL');
          }
          throw err;
