@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
 import { BookmarksModule } from './bookmarks/bookmarks.module';
+import { CollectionsModule } from './collections/collections.module';
 import { HealthModule } from './health/health.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -21,6 +22,7 @@ import { PrismaModule } from './prisma/prisma.module';
       PrismaModule,
       AuthModule,
       BookmarksModule,
+      CollectionsModule,
       HealthModule,
    ],
 })

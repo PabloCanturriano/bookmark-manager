@@ -11,9 +11,10 @@ const { Text } = Typography;
 interface Props {
    favoritedOnly?: boolean;
    searchQuery?: string;
+   collectionId?: string | null;
 }
 
-export function BookmarkList({ favoritedOnly, searchQuery = '' }: Props) {
+export function BookmarkList({ favoritedOnly, searchQuery = '', collectionId }: Props) {
    const [page, setPage] = useState(1);
    const PAGE_SIZE = 12;
 
@@ -24,6 +25,7 @@ export function BookmarkList({ favoritedOnly, searchQuery = '' }: Props) {
       page,
       limit: PAGE_SIZE,
       ...(favoritedOnly && { favorited: true }),
+      ...(collectionId && { collectionId }),
    });
 
    const searchResult = useSearchBookmarks(debouncedQuery, page, PAGE_SIZE);

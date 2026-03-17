@@ -5,6 +5,7 @@ import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useState } from "react";
 import { BookmarkList } from "@/components/dashboard/BookmarkList";
 import { BookmarkSection } from "@/components/dashboard/BookmarkSection";
+import { CollectionsSider } from "@/components/dashboard/CollectionsSider";
 import { CreateBookmarkModal } from "@/components/dashboard/CreateBookmarkModal";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { StatsCards } from "@/components/dashboard/StatsCards";
@@ -22,6 +23,7 @@ export function DashboardContent() {
   );
   const [search, setSearch] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  const [collectionId, setCollectionId] = useState<string | null>(null);
 
   const handleSearch = (q: string) => {
     setSearch(q);
@@ -49,36 +51,42 @@ export function DashboardContent() {
       />
       <CreateBookmarkModal open={addOpen} onClose={() => setAddOpen(false)} />
 
-      <Content style={{ maxWidth: 1280, width: "100%", margin: "0 auto", padding: "24px 24px", display: "flex", flexDirection: "column", gap: 24 }}>
-        {activeTab === "home" && (
-          <>
-            <StatsCards stats={stats} isLoading={loadingRecent} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <BookmarkSection
-                title="Recently Added"
-                bookmarks={recent?.items}
-                isLoading={loadingRecent}
-                onViewAll={() => setActiveTab("all")}
-              />
-              <BookmarkSection
-                title="Your Favourites"
-                bookmarks={favourites?.items}
-                isLoading={loadingFavourites}
-              />
-            </div>
-          </>
-        )}
-
+      <Layout style={{ background: "transparent" }}>
         {activeTab === "all" && (
-          <BookmarkList searchQuery={search} />
+          <CollectionsSider selectedId={collectionId} onSelect={setCollectionId} />
         )}
 
-        {activeTab === "bin" && (
-          <div className="flex items-center justify-center py-24 text-gray-400">
-            Bin — coming soon
-          </div>
-        )}
-      </Content>
+        <Content style={{ padding: 24, display: "flex", flexDirection: "column", gap: 24 }}>
+          {activeTab === "home" && (
+            <>
+              <StatsCards stats={stats} isLoading={loadingRecent} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <BookmarkSection
+                  title="Recently Added"
+                  bookmarks={recent?.items}
+                  isLoading={loadingRecent}
+                  onViewAll={() => setActiveTab("all")}
+                />
+                <BookmarkSection
+                  title="Your Favourites"
+                  bookmarks={favourites?.items}
+                  isLoading={loadingFavourites}
+                />
+              </div>
+            </>
+          )}
+
+          {activeTab === "all" && (
+            <BookmarkList searchQuery={search} collectionId={collectionId} />
+          )}
+
+          {activeTab === "bin" && (
+            <div className="flex items-center justify-center py-24 text-gray-400">
+              Bin — coming soon
+            </div>
+          )}
+        </Content>
+      </Layout>
     </Layout>
   );
 }
