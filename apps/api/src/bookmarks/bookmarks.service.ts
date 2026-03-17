@@ -10,7 +10,6 @@ import {
    SearchBookmarksDto,
    UpdateBookmarkDto,
 } from '@bookmark-manager/types';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScraperService } from './scraper.service';
 
@@ -42,7 +41,7 @@ export class BookmarksService {
 
          return bookmark;
       } catch (err) {
-         if ((err as Prisma.PrismaClientKnownRequestError)?.code === 'P2002') {
+         if ((err as { code?: string })?.code === 'P2002') {
             throw new ConflictException('You already saved this URL');
          }
          throw err;
@@ -166,7 +165,7 @@ export class BookmarksService {
       `,
       ]);
 
-      const ids = items.map((r) => r.id);
+      const ids = items.map((r: { id: string }) => r.id);
       const bookmarks = await this.prisma.bookmark.findMany({
          where: { id: { in: ids } },
          orderBy: { createdAt: 'desc' },
