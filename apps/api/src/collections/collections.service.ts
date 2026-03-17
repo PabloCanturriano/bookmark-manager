@@ -9,7 +9,10 @@ export class CollectionsService {
    findAll(userId: string) {
       return this.prisma.collection.findMany({
          where: { userId },
-         include: { children: { select: { id: true, name: true } }, _count: { select: { bookmarks: true } } },
+         include: {
+            children: { select: { id: true, name: true } },
+            _count: { select: { bookmarks: true } },
+         },
          orderBy: { createdAt: 'desc' },
       });
    }
@@ -17,7 +20,10 @@ export class CollectionsService {
    async findOne(userId: string, id: string) {
       const collection = await this.prisma.collection.findUnique({
          where: { id },
-         include: { children: { select: { id: true, name: true } }, _count: { select: { bookmarks: true } } },
+         include: {
+            children: { select: { id: true, name: true } },
+            _count: { select: { bookmarks: true } },
+         },
       });
 
       if (!collection) throw new NotFoundException('Collection not found');

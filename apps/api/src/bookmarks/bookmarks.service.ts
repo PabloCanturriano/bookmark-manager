@@ -28,16 +28,8 @@ export class BookmarksService {
             userId,
             isFavorited: dto.isFavorited ?? false,
             collectionId: dto.collectionId ?? null,
-            tags: dto.tags?.length
-               ? {
-                    connectOrCreate: dto.tags.map((name) => ({
-                       where: { name_userId: { name, userId } },
-                       create: { name, userId },
-                    })),
-                 }
-               : undefined,
          },
-         include: { tags: true },
+         include: {},
       });
 
       await this.updateSearchVector(bookmark.id);
@@ -46,7 +38,7 @@ export class BookmarksService {
    }
 
    async findAll(userId: string, query: ListBookmarksDto) {
-      const { page, limit, collectionId, tag, favorited } = query;
+      const { page, limit, collectionId, favorited } = query;
       const skip = (page - 1) * limit;
 
       const where = {
@@ -54,13 +46,12 @@ export class BookmarksService {
          deletedAt: null,
          ...(collectionId !== undefined && { collectionId }),
          ...(favorited !== undefined && { isFavorited: favorited }),
-         ...(tag && { tags: { some: { name: tag } } }),
       };
 
       const [items, total] = await this.prisma.$transaction([
          this.prisma.bookmark.findMany({
             where,
-            include: { tags: true, collection: { select: { id: true, name: true } } },
+            include: { collection: { select: { id: true, name: true } } },
             orderBy: { createdAt: 'desc' },
             skip,
             take: limit,
@@ -74,7 +65,6 @@ export class BookmarksService {
    async findBin(userId: string) {
       const items = await this.prisma.bookmark.findMany({
          where: { userId, deletedAt: { not: null } },
-         include: { tags: true },
          orderBy: { deletedAt: 'desc' },
       });
       return { items, total: items.length };
@@ -83,7 +73,7 @@ export class BookmarksService {
    async findOne(userId: string, id: string) {
       const bookmark = await this.prisma.bookmark.findUnique({
          where: { id },
-         include: { tags: true, collection: { select: { id: true, name: true } } },
+         include: { collection: { select: { id: true, name: true } } },
       });
 
       if (!bookmark) throw new NotFoundException('Bookmark not found');
@@ -102,17 +92,7 @@ export class BookmarksService {
             ...(dto.description !== undefined && { description: dto.description }),
             ...(dto.collectionId !== undefined && { collectionId: dto.collectionId }),
             ...(dto.isFavorited !== undefined && { isFavorited: dto.isFavorited }),
-            ...(dto.tags && {
-               tags: {
-                  set: [],
-                  connectOrCreate: dto.tags.map((name) => ({
-                     where: { name_userId: { name, userId } },
-                     create: { name, userId },
-                  })),
-               },
-            }),
          },
-         include: { tags: true },
       });
 
       if (dto.title || dto.description) {
@@ -177,7 +157,6 @@ export class BookmarksService {
       const ids = items.map((r) => r.id);
       const bookmarks = await this.prisma.bookmark.findMany({
          where: { id: { in: ids } },
-         include: { tags: true },
          orderBy: { createdAt: 'desc' },
       });
 

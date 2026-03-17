@@ -53,26 +53,6 @@ async function main() {
       },
    });
 
-   // ─── Tags ─────────────────────────────────────────────────────────────────
-
-   const tagBackend = await prisma.tag.upsert({
-      where: { name_userId: { name: 'backend', userId: alice.id } },
-      update: {},
-      create: { name: 'backend', userId: alice.id },
-   });
-
-   const tagTypeScript = await prisma.tag.upsert({
-      where: { name_userId: { name: 'typescript', userId: alice.id } },
-      update: {},
-      create: { name: 'typescript', userId: alice.id },
-   });
-
-   const tagTools = await prisma.tag.upsert({
-      where: { name_userId: { name: 'tools', userId: alice.id } },
-      update: {},
-      create: { name: 'tools', userId: alice.id },
-   });
-
    // ─── Bookmarks ────────────────────────────────────────────────────────────
 
    await prisma.bookmark.upsert({
@@ -88,7 +68,6 @@ async function main() {
          isFavorited: true,
          userId: alice.id,
          collectionId: nestjsCollection.id,
-         tags: { connect: [{ id: tagBackend.id }, { id: tagTypeScript.id }] },
       },
    });
 
@@ -103,7 +82,6 @@ async function main() {
          isFavorited: false,
          userId: alice.id,
          collectionId: devCollection.id,
-         tags: { connect: [{ id: tagBackend.id }, { id: tagTypeScript.id }] },
       },
    });
 
@@ -118,10 +96,10 @@ async function main() {
          isFavorited: false,
          userId: alice.id,
          collectionId: devCollection.id,
-         tags: { connect: [{ id: tagTools.id }] },
       },
    });
 
+   // Populate full-text search vectors
    await prisma.$executeRaw`
       UPDATE "Bookmark"
       SET "searchVector" = to_tsvector(

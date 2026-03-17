@@ -10,7 +10,11 @@ import {
 import { Button, Form, Input, Layout, Menu, Modal, Popconfirm, Skeleton } from 'antd';
 import { CreateCollectionSchema } from '@bookmark-manager/types';
 import { useState } from 'react';
-import { useCollections, useCreateCollection, useDeleteCollection } from '@/lib/collections.queries';
+import {
+   useCollections,
+   useCreateCollection,
+   useDeleteCollection,
+} from '@/lib/collections.queries';
 
 const { Sider } = Layout;
 
@@ -110,7 +114,13 @@ export function CollectionsSider({ view, onViewChange }: Props) {
             {isLoading ? (
                <div style={{ padding: '0 16px' }}>
                   {Array.from({ length: 4 }).map((_, i) => (
-                     <Skeleton.Input key={i} active size="small" block style={{ marginBottom: 8 }} />
+                     <Skeleton.Input
+                        key={i}
+                        active
+                        size="small"
+                        block
+                        style={{ marginBottom: 8 }}
+                     />
                   ))}
                </div>
             ) : (
@@ -118,12 +128,16 @@ export function CollectionsSider({ view, onViewChange }: Props) {
                   mode="inline"
                   selectedKeys={[selectedKey]}
                   items={menuItems}
-                  onClick={({ key }) => onViewChange(key === '__all__' ? null : (key as DashboardView))}
+                  onClick={({ key }) =>
+                     onViewChange(key === '__all__' ? null : (key as DashboardView))
+                  }
                   style={{ border: 'none', flex: 1 }}
                />
             )}
 
-            <div style={{ padding: '12px 16px', borderTop: '1px solid #f0f0f0', marginTop: 'auto' }}>
+            <div
+               style={{ padding: '12px 16px', borderTop: '1px solid #f0f0f0', marginTop: 'auto' }}
+            >
                <Button
                   type="dashed"
                   icon={<PlusOutlined />}
@@ -140,7 +154,10 @@ export function CollectionsSider({ view, onViewChange }: Props) {
             title="New Collection"
             open={modalOpen}
             onOk={() => form.submit()}
-            onCancel={() => { form.resetFields(); setModalOpen(false); }}
+            onCancel={() => {
+               form.resetFields();
+               setModalOpen(false);
+            }}
             okText="Create"
             confirmLoading={creating}
             destroyOnHidden
@@ -152,16 +169,20 @@ export function CollectionsSider({ view, onViewChange }: Props) {
                initialValues={{ isPublic: false }}
                style={{ marginTop: 16 }}
             >
-               <Form.Item name="isPublic" hidden><Input /></Form.Item>
+               <Form.Item name="isPublic" hidden>
+                  <Input />
+               </Form.Item>
                <Form.Item
                   name="name"
                   label="Name"
-                  rules={[{
-                     validator: async (_, value) => {
-                        const result = CreateCollectionSchema.shape.name.safeParse(value);
-                        if (!result.success) throw new Error(result.error.errors[0].message);
+                  rules={[
+                     {
+                        validator: async (_, value) => {
+                           const result = CreateCollectionSchema.shape.name.safeParse(value);
+                           if (!result.success) throw new Error(result.error.errors[0].message);
+                        },
                      },
-                  }]}
+                  ]}
                >
                   <Input placeholder="e.g. Design resources" autoFocus />
                </Form.Item>

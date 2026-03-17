@@ -19,7 +19,6 @@ model User {
 
   bookmarks     Bookmark[]
   collections   Collection[]
-  tags          Tag[]
   refreshTokens RefreshToken[]
 }
 
@@ -58,22 +57,6 @@ model Collection {
   @@index([parentId])
 }
 
-// ─── Tags ─────────────────────────────────────────────────────────────────────
-
-model Tag {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  bookmarks Bookmark[]
-
-  @@unique([name, userId])
-  @@index([userId])
-}
-
 // ─── Bookmarks ────────────────────────────────────────────────────────────────
 
 model Bookmark {
@@ -96,8 +79,6 @@ model Bookmark {
 
   collectionId String?
   collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
-
-  tags Tag[]
 
   searchVector Unsupported("tsvector")?
 

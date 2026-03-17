@@ -2,11 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreateBookmarkDto, UpdateBookmarkDto } from '@bookmark-manager/types';
 import { api } from './axios';
 
-interface Tag {
-   id: string;
-   name: string;
-}
-
 export interface Bookmark {
    id: string;
    url: string;
@@ -17,7 +12,6 @@ export interface Bookmark {
    isFavorited: boolean;
    createdAt: string;
    collectionId: string | null;
-   tags: Tag[];
 }
 
 interface BookmarkPage {
@@ -43,7 +37,9 @@ export const useSearchBookmarks = (q: string, page = 1, limit = 12) =>
    useQuery({
       queryKey: ['bookmarks', 'search', { q, page, limit }] as const,
       queryFn: () =>
-         api.get<BookmarkPage>('/bookmarks/search', { params: { q, page, limit } }).then((r) => r.data),
+         api
+            .get<BookmarkPage>('/bookmarks/search', { params: { q, page, limit } })
+            .then((r) => r.data),
       enabled: q.trim().length > 0,
    });
 

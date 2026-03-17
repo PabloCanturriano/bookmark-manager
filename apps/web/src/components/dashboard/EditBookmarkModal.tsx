@@ -64,13 +64,15 @@ export function EditBookmarkModal({ bookmark, open, onClose }: Props) {
             <Form.Item
                name="title"
                label="Title"
-               rules={[{
-                  validator: async (_, value) => {
-                     if (!value) return;
-                     const result = UpdateBookmarkSchema.shape.title.safeParse(value);
-                     if (!result.success) throw new Error(result.error.errors[0].message);
+               rules={[
+                  {
+                     validator: async (_, value) => {
+                        if (!value) return;
+                        const result = UpdateBookmarkSchema.shape.title.safeParse(value);
+                        if (!result.success) throw new Error(result.error.errors[0].message);
+                     },
                   },
-               }]}
+               ]}
             >
                <Input />
             </Form.Item>
@@ -78,13 +80,15 @@ export function EditBookmarkModal({ bookmark, open, onClose }: Props) {
             <Form.Item
                name="description"
                label="Description"
-               rules={[{
-                  validator: async (_, value) => {
-                     if (!value) return;
-                     const result = UpdateBookmarkSchema.shape.description.safeParse(value);
-                     if (!result.success) throw new Error(result.error.errors[0].message);
+               rules={[
+                  {
+                     validator: async (_, value) => {
+                        if (!value) return;
+                        const result = UpdateBookmarkSchema.shape.description.safeParse(value);
+                        if (!result.success) throw new Error(result.error.errors[0].message);
+                     },
                   },
-               }]}
+               ]}
             >
                <Input.TextArea rows={3} />
             </Form.Item>

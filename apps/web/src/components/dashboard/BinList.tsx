@@ -1,7 +1,7 @@
 'use client';
 
 import { DeleteOutlined, UndoOutlined } from '@ant-design/icons';
-import { Avatar, Button, Popconfirm, Skeleton, Tag, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Popconfirm, Skeleton, Tooltip, Typography } from 'antd';
 import {
    useBinBookmarks,
    useEmptyBin,
@@ -86,16 +86,6 @@ export function BinList() {
                         <Text className="text-xs text-gray-400">{domain}</Text>
                      </div>
 
-                     {bookmark.tags.length > 0 && (
-                        <div className="hidden sm:flex gap-1">
-                           {bookmark.tags.slice(0, 2).map((tag) => (
-                              <Tag key={tag.id} className="text-xs m-0 rounded-full">
-                                 {tag.name}
-                              </Tag>
-                           ))}
-                        </div>
-                     )}
-
                      <div className="flex gap-1 flex-shrink-0">
                         <Tooltip title="Restore">
                            <Button
@@ -113,12 +103,7 @@ export function BinList() {
                            cancelText="Cancel"
                         >
                            <Tooltip title="Delete permanently">
-                              <Button
-                                 type="text"
-                                 size="small"
-                                 danger
-                                 icon={<DeleteOutlined />}
-                              />
+                              <Button type="text" size="small" danger icon={<DeleteOutlined />} />
                            </Tooltip>
                         </Popconfirm>
                      </div>

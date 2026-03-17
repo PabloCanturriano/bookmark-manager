@@ -50,28 +50,28 @@ export function DashboardHeader({ onSearch, onAdd }: Props) {
             zIndex: 100,
          }}
       >
-         {/* Logo */}
-         <div
-            style={{
-               width: 32,
-               height: 32,
-               background: '#6366f1',
-               borderRadius: 8,
-               display: 'flex',
-               alignItems: 'center',
-               justifyContent: 'center',
-               color: '#fff',
-               fontWeight: 700,
-               fontSize: 14,
-               flexShrink: 0,
-            }}
-         >
-            B
+         <div style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }}>
+            <div
+               style={{
+                  width: 28,
+                  height: 28,
+                  background: '#6366f1',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#fff',
+                  fontWeight: 700,
+                  fontSize: 13,
+               }}
+            >
+               B
+            </div>
+            <span style={{ fontWeight: 600, fontSize: 18, color: '#1f2937' }}>ookmark Manager</span>
          </div>
 
          <div style={{ flex: 1 }} />
 
-         {/* Actions */}
          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <Input
                ref={searchRef}
@@ -95,7 +95,9 @@ export function DashboardHeader({ onSearch, onAdd }: Props) {
                   items: [
                      {
                         key: 'email',
-                        label: <span style={{ color: '#6b7280', fontSize: 12 }}>{user?.email}</span>,
+                        label: (
+                           <span style={{ color: '#6b7280', fontSize: 12 }}>{user?.email}</span>
+                        ),
                         disabled: true,
                      },
                      { type: 'divider' },
@@ -110,7 +112,10 @@ export function DashboardHeader({ onSearch, onAdd }: Props) {
                }}
                placement="bottomRight"
             >
-               <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer', background: '#6366f1' }} />
+               <Avatar
+                  icon={<UserOutlined />}
+                  style={{ cursor: 'pointer', background: '#6366f1' }}
+               />
             </Dropdown>
          </div>
       </Header>

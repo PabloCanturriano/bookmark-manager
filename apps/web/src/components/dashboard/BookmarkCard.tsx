@@ -7,7 +7,7 @@ import {
    HeartFilled,
    HeartOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Popconfirm, Tag, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Popconfirm, Tooltip, Typography } from 'antd';
 import { useState } from 'react';
 import type { Bookmark } from '@/lib/bookmarks.queries';
 import { useDeleteBookmark, useToggleFavorite } from '@/lib/bookmarks.queries';
@@ -66,19 +66,6 @@ export function BookmarkCard({ bookmark }: Props) {
 
                {bookmark.description && (
                   <Text className="text-xs text-gray-500 line-clamp-2">{bookmark.description}</Text>
-               )}
-
-               {bookmark.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-auto pt-1">
-                     {bookmark.tags.slice(0, 3).map((tag) => (
-                        <Tag key={tag.id} className="text-xs m-0 rounded-full">
-                           {tag.name}
-                        </Tag>
-                     ))}
-                     {bookmark.tags.length > 3 && (
-                        <Tag className="text-xs m-0 rounded-full">+{bookmark.tags.length - 3}</Tag>
-                     )}
-                  </div>
                )}
             </div>
 

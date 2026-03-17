@@ -5,7 +5,6 @@ export const CreateBookmarkSchema = z.object({
    title: z.string().max(255).optional(),
    description: z.string().max(1000).optional(),
    collectionId: z.string().cuid().optional(),
-   tags: z.array(z.string().max(50)).max(20).optional(),
    isFavorited: z.boolean().optional(),
 });
 
@@ -13,7 +12,6 @@ export const UpdateBookmarkSchema = z.object({
    title: z.string().max(255).optional(),
    description: z.string().max(1000).optional(),
    collectionId: z.string().cuid().nullable().optional(),
-   tags: z.array(z.string().max(50)).max(20).optional(),
    isFavorited: z.boolean().optional(),
 });
 
@@ -28,7 +26,6 @@ export const SearchBookmarksSchema = PaginationSchema.extend({
 
 export const ListBookmarksSchema = PaginationSchema.extend({
    collectionId: z.string().cuid().optional(),
-   tag: z.string().max(50).optional(),
    favorited: z.coerce.boolean().optional(),
 });
 
