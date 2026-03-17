@@ -22,13 +22,20 @@ interface BookmarkPage {
    limit: number;
 }
 
+interface BookmarkListParams {
+   page?: number;
+   limit?: number;
+   collectionId?: string;
+   favorited?: boolean;
+}
+
 export const bookmarkKeys = {
    all: ['bookmarks'] as const,
-   list: (params: Record<string, unknown>) => ['bookmarks', 'list', params] as const,
+   list: (params: BookmarkListParams) => ['bookmarks', 'list', params] as const,
    bin: ['bookmarks', 'bin'] as const,
 };
 
-export const useBookmarks = (params: Record<string, unknown> = {}) =>
+export const useBookmarks = (params: BookmarkListParams = {}) =>
    useQuery({
       queryKey: bookmarkKeys.list(params),
       queryFn: () => api.get<BookmarkPage>('/bookmarks', { params }).then((r) => r.data),

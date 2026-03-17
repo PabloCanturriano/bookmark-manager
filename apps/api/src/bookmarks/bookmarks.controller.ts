@@ -11,7 +11,6 @@ import {
    Req,
    UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import {
    CreateBookmarkDto,
    CreateBookmarkSchema,
@@ -23,12 +22,9 @@ import {
    UpdateBookmarkSchema,
 } from '@bookmark-manager/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthRequest } from '../common/types/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { BookmarksService } from './bookmarks.service';
-
-interface AuthRequest extends Request {
-   user: { id: string; email: string };
-}
 
 @UseGuards(JwtAuthGuard)
 @Controller('bookmarks')

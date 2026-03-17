@@ -10,7 +10,6 @@ import {
    Req,
    UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 import {
    CreateCollectionDto,
    CreateCollectionSchema,
@@ -18,12 +17,9 @@ import {
    UpdateCollectionSchema,
 } from '@bookmark-manager/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthRequest } from '../common/types/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { CollectionsService } from './collections.service';
-
-interface AuthRequest extends Request {
-   user: { id: string; email: string };
-}
 
 @UseGuards(JwtAuthGuard)
 @Controller('collections')
