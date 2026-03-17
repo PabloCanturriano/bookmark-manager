@@ -1,15 +1,5 @@
-import {
-   ConflictException,
-   ForbiddenException,
-   Injectable,
-   NotFoundException,
-} from '@nestjs/common';
-import {
-   CreateBookmarkDto,
-   ListBookmarksDto,
-   SearchBookmarksDto,
-   UpdateBookmarkDto,
-} from '@bookmark-manager/types';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, } from '@nestjs/common';
+import { CreateBookmarkDto, ListBookmarksDto, SearchBookmarksDto, UpdateBookmarkDto, } from '@bookmark-manager/types';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScraperService } from './scraper.service';
@@ -95,10 +85,8 @@ export class BookmarksService {
    }
 
    async update(userId: string, id: string, dto: UpdateBookmarkDto) {
-      await this.findOne(userId, id);
-
-      const bookmark = await this.prisma.bookmark.update({
-         where: { id },
+      const result = await this.prisma.bookmark.updateMany({
+         where: { id, userId },
          data: {
             ...(dto.title !== undefined && { title: dto.title }),
             ...(dto.description !== undefined && { description: dto.description }),
@@ -107,30 +95,34 @@ export class BookmarksService {
          },
       });
 
+      if (result.count === 0) throw new NotFoundException('Bookmark not found');
+
       await this.updateSearchVector(id);
 
-      return bookmark;
+      return this.prisma.bookmark.findUnique({ where: { id } });
    }
 
    async softDelete(userId: string, id: string) {
-      await this.findOne(userId, id);
-      await this.prisma.bookmark.update({
-         where: { id },
+      const result = await this.prisma.bookmark.updateMany({
+         where: { id, userId },
          data: { deletedAt: new Date() },
       });
+      if (result.count === 0) throw new NotFoundException('Bookmark not found');
    }
 
    async restore(userId: string, id: string) {
-      await this.findOne(userId, id);
-      await this.prisma.bookmark.update({
-         where: { id },
+      const result = await this.prisma.bookmark.updateMany({
+         where: { id, userId },
          data: { deletedAt: null },
       });
+      if (result.count === 0) throw new NotFoundException('Bookmark not found');
    }
 
    async permanentDelete(userId: string, id: string) {
-      await this.findOne(userId, id);
-      await this.prisma.bookmark.delete({ where: { id } });
+      const result = await this.prisma.bookmark.deleteMany({
+         where: { id, userId },
+      });
+      if (result.count === 0) throw new NotFoundException('Bookmark not found');
    }
 
    async emptyBin(userId: string) {

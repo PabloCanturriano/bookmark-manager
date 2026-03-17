@@ -11,6 +11,7 @@ import { Avatar, Button, Popconfirm, Tooltip, Typography } from 'antd';
 import { useState } from 'react';
 import type { Bookmark } from '@/lib/bookmarks.queries';
 import { useDeleteBookmark, useToggleFavorite } from '@/lib/bookmarks.queries';
+import { getDomain, getSafeUrl } from '@/lib/utils';
 import { EditBookmarkModal } from './EditBookmarkModal';
 
 const { Text } = Typography;
@@ -24,22 +25,8 @@ export function BookmarkCard({ bookmark }: Props) {
    const { mutate: deleteBookmark, isPending: deleting } = useDeleteBookmark();
    const [editOpen, setEditOpen] = useState(false);
 
-   const domain = (() => {
-      try {
-         return new URL(bookmark.url).hostname.replace('www.', '');
-      } catch {
-         return bookmark.url;
-      }
-   })();
-
-   const safeUrl = (() => {
-      try {
-         const { protocol } = new URL(bookmark.url);
-         return protocol === 'https:' || protocol === 'http:' ? bookmark.url : '#';
-      } catch {
-         return '#';
-      }
-   })();
+   const domain = getDomain(bookmark.url);
+   const safeUrl = getSafeUrl(bookmark.url);
 
    return (
       <>

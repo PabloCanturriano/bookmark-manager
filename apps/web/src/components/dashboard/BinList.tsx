@@ -8,6 +8,7 @@ import {
    usePermanentDeleteBookmark,
    useRestoreBookmark,
 } from '@/lib/bookmarks.queries';
+import { getDomain } from '@/lib/utils';
 
 const { Text } = Typography;
 
@@ -57,13 +58,7 @@ export function BinList() {
 
          <div className="flex flex-col gap-2">
             {data.items.map((bookmark) => {
-               const domain = (() => {
-                  try {
-                     return new URL(bookmark.url).hostname.replace('www.', '');
-                  } catch {
-                     return bookmark.url;
-                  }
-               })();
+               const domain = getDomain(bookmark.url);
 
                return (
                   <div
