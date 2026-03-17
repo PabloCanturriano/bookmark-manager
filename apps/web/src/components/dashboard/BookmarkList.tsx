@@ -1,7 +1,7 @@
 'use client';
 
 import { Pagination, Skeleton, Typography } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBookmarks, useSearchBookmarks } from '@/lib/bookmarks.queries';
 import { useDebounce } from '@/lib/useDebounce';
 import { BookmarkCard } from './BookmarkCard';
@@ -19,6 +19,10 @@ export function BookmarkList({ favoritedOnly, searchQuery = '', collectionId }: 
    const PAGE_SIZE = 12;
 
    const debouncedQuery = useDebounce(searchQuery);
+
+   useEffect(() => {
+      setPage(1);
+   }, [debouncedQuery, favoritedOnly, collectionId]);
    const isSearching = debouncedQuery.trim().length > 0;
 
    const listResult = useBookmarks({

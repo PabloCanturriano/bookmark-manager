@@ -32,6 +32,15 @@ export function BookmarkCard({ bookmark }: Props) {
       }
    })();
 
+   const safeUrl = (() => {
+      try {
+         const { protocol } = new URL(bookmark.url);
+         return protocol === 'https:' || protocol === 'http:' ? bookmark.url : '#';
+      } catch {
+         return '#';
+      }
+   })();
+
    return (
       <>
          <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
@@ -119,7 +128,7 @@ export function BookmarkCard({ bookmark }: Props) {
                   </Popconfirm>
                </div>
 
-               <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+               <a href={safeUrl} target="_blank" rel="noopener noreferrer">
                   <Button
                      type="text"
                      size="small"

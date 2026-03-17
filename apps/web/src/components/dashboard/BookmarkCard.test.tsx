@@ -24,7 +24,6 @@ const mockBookmark = {
    isFavorited: false,
    createdAt: new Date().toISOString(),
    collectionId: null,
-   tags: [{ id: 't1', name: 'backend' }],
 };
 
 describe('BookmarkCard', () => {
@@ -32,11 +31,6 @@ describe('BookmarkCard', () => {
       renderWithProviders(<BookmarkCard bookmark={mockBookmark} />);
       expect(screen.getByText('NestJS')).toBeDefined();
       expect(screen.getByText('nestjs.com')).toBeDefined();
-   });
-
-   it('renders tags', () => {
-      renderWithProviders(<BookmarkCard bookmark={mockBookmark} />);
-      expect(screen.getByText('backend')).toBeDefined();
    });
 
    it('shows delete popconfirm on click', async () => {

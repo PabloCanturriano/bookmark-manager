@@ -29,7 +29,6 @@ export class BookmarksService {
             isFavorited: dto.isFavorited ?? false,
             collectionId: dto.collectionId ?? null,
          },
-         include: {},
       });
 
       await this.updateSearchVector(bookmark.id);

@@ -1,6 +1,6 @@
 'use client';
 
-import { ConfigProvider } from 'antd';
+import { App, ConfigProvider } from 'antd';
 import { ReactNode } from 'react';
 
 export function AntdProvider({ children }: { children: ReactNode }) {
@@ -13,7 +13,7 @@ export function AntdProvider({ children }: { children: ReactNode }) {
             },
          }}
       >
-         {children}
+         <App>{children}</App>
       </ConfigProvider>
    );
 }
