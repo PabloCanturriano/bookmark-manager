@@ -94,9 +94,7 @@ export class BookmarksService {
          },
       });
 
-      if (dto.title || dto.description) {
-         await this.updateSearchVector(id);
-      }
+      await this.updateSearchVector(id);
 
       return bookmark;
    }
@@ -145,7 +143,7 @@ export class BookmarksService {
         ORDER BY ts_rank("searchVector", plainto_tsquery('english', ${q})) DESC
         LIMIT ${limit} OFFSET ${skip}
       `,
-         this.prisma.$queryRaw<[{ count: bigint }]>`
+         this.prisma.$queryRaw<Array<{ count: bigint }>>`
         SELECT count(*) FROM "Bookmark"
         WHERE "userId" = ${userId}
           AND "deletedAt" IS NULL

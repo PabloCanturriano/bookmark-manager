@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Throttle } from '@nestjs/throttler';
 import { LoginDto, LoginSchema, RegisterDto, RegisterSchema } from '@bookmark-manager/types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { AuthService } from './auth.service';
@@ -15,6 +16,7 @@ const COOKIE_DEFAULTS = {
 export class AuthController {
    constructor(private authService: AuthService) {}
 
+   @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('register')
    async register(
       @Body(new ZodValidationPipe(RegisterSchema)) dto: RegisterDto,
@@ -25,6 +27,7 @@ export class AuthController {
       return { user };
    }
 
+   @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('login')
    async login(
       @Body(new ZodValidationPipe(LoginSchema)) dto: LoginDto,
@@ -35,6 +38,7 @@ export class AuthController {
       return { user };
    }
 
+   @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('refresh')
    async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
       const refreshToken = req.cookies?.refreshToken;
