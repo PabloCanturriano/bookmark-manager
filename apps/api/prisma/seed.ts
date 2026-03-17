@@ -121,6 +121,14 @@ async function main() {
          tags: { connect: [{ id: tagTools.id }] },
       },
    });
+
+   await prisma.$executeRaw`
+      UPDATE "Bookmark"
+      SET "searchVector" = to_tsvector(
+         'english',
+         coalesce(title, '') || ' ' || coalesce(description, '') || ' ' || url
+      )
+   `;
 }
 
 main()

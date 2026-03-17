@@ -38,6 +38,14 @@ export const useBookmarks = (params: Record<string, unknown> = {}) =>
       queryFn: () => api.get<BookmarkPage>('/bookmarks', { params }).then((r) => r.data),
    });
 
+export const useSearchBookmarks = (q: string, page = 1, limit = 12) =>
+   useQuery({
+      queryKey: ['bookmarks', 'search', { q, page, limit }] as const,
+      queryFn: () =>
+         api.get<BookmarkPage>('/bookmarks/search', { params: { q, page, limit } }).then((r) => r.data),
+      enabled: q.trim().length > 0,
+   });
+
 export const useCreateBookmark = () => {
    const qc = useQueryClient();
    return useMutation({

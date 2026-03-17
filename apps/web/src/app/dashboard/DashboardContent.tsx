@@ -23,6 +23,11 @@ export function DashboardContent() {
   const [search, setSearch] = useState("");
   const [addOpen, setAddOpen] = useState(false);
 
+  const handleSearch = (q: string) => {
+    setSearch(q);
+    if (q.trim().length > 0) setActiveTab("all");
+  };
+
   const { data: recent, isLoading: loadingRecent } = useBookmarks({ limit: 8 });
   const { data: favourites, isLoading: loadingFavourites } = useBookmarks({
     favorited: true,
@@ -39,7 +44,7 @@ export function DashboardContent() {
       <DashboardHeader
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onSearch={setSearch}
+        onSearch={handleSearch}
         onAdd={() => setAddOpen(true)}
       />
       <CreateBookmarkModal open={addOpen} onClose={() => setAddOpen(false)} />
