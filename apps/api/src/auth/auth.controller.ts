@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { LoginDto, LoginSchema, RegisterDto, RegisterSchema } from '@bookmark-manager/types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -12,10 +13,12 @@ const COOKIE_DEFAULTS = {
    path: '/',
 };
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
    constructor(private authService: AuthService) {}
 
+   @ApiOperation({ summary: 'Create a new account', description: 'Sets accessToken and refreshToken httpOnly cookies on success.' })
    @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('register')
    async register(
@@ -27,6 +30,7 @@ export class AuthController {
       return { user };
    }
 
+   @ApiOperation({ summary: 'Sign in', description: 'Sets accessToken and refreshToken httpOnly cookies on success.' })
    @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('login')
    async login(
@@ -38,6 +42,7 @@ export class AuthController {
       return { user };
    }
 
+   @ApiOperation({ summary: 'Refresh access token using the refreshToken cookie' })
    @Throttle({ strict: { ttl: 60_000, limit: 10 } })
    @Post('refresh')
    async refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
@@ -49,6 +54,7 @@ export class AuthController {
       return { message: 'Tokens refreshed' };
    }
 
+   @ApiOperation({ summary: 'Sign out and clear auth cookies' })
    @Post('logout')
    logout(@Res({ passthrough: true }) res: Response) {
       res.clearCookie('accessToken', COOKIE_DEFAULTS);

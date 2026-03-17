@@ -1,0 +1,45 @@
+# Dependencies
+**/node_modules
+
+# Build outputs
+**/.next
+**/dist
+**/build
+
+# Test and coverage
+**/__tests__
+**/*.test.*
+**/*.spec.*
+**/coverage
+
+# Dev tooling
+**/.env
+**/.env.*
+!**/.env.example
+**/.eslintrc*
+**/eslint.config.*
+**/vitest.config.*
+**/jest.config.*
+
+# Git
+.git
+.gitignore
+
+# Editor
+.vscode
+.idea
+**/*.swp
+**/*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+**/Dockerfile*
+**/.dockerignore
+docker-compose*.yml
+
+# Docs / assets not needed in image
+README.md
+assets/
