@@ -1,5 +1,15 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException, } from '@nestjs/common';
-import { CreateBookmarkDto, ListBookmarksDto, SearchBookmarksDto, UpdateBookmarkDto, } from '@bookmark-manager/types';
+import {
+   ConflictException,
+   ForbiddenException,
+   Injectable,
+   NotFoundException,
+} from '@nestjs/common';
+import {
+   CreateBookmarkDto,
+   ListBookmarksDto,
+   SearchBookmarksDto,
+   UpdateBookmarkDto,
+} from '@bookmark-manager/types';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScraperService } from './scraper.service';
