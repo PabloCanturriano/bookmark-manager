@@ -23,6 +23,9 @@ COPY . .
 RUN pnpm --filter=@bookmark-manager/types build
 RUN pnpm --filter=api build
 
+# Compile seed script to plain JS
+RUN cd apps/api && ./node_modules/.bin/tsc -p prisma/tsconfig.json --outDir prisma/dist
+
 FROM deps AS prod-deps
 
 WORKDIR /app
@@ -33,6 +36,10 @@ RUN pnpm --filter=@bookmark-manager/types build
 
 # pnpm deploy creates an isolated folder with only production dependencies
 RUN pnpm deploy --filter=@bookmark-manager/api --prod /prod/api
+
+# Generate Prisma client inside the deployed folder
+COPY apps/api/prisma /prod/api/prisma
+RUN cd /prod/api && ./node_modules/.bin/prisma generate
 
 FROM node:20-alpine AS runner
 
@@ -46,9 +53,13 @@ COPY --from=prod-deps /prod/api/node_modules ./node_modules
 # Copy compiled output
 COPY --from=build /app/apps/api/dist ./dist
 
-# Copy prisma schema for migrate on startup (optional)
+# Copy prisma schema + migrations + compiled seed
 COPY --from=build /app/apps/api/prisma ./prisma
+
+# Copy entrypoint script
+COPY apps/api/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3001
 
-CMD ["node", "dist/main"]
+ENTRYPOINT ["./entrypoint.sh"]

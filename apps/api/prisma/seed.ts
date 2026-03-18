@@ -28,38 +28,43 @@ async function main() {
 
    // ─── Collections ──────────────────────────────────────────────────────────
 
-   const devCollection = await prisma.collection.upsert({
-      where: { id: 'seed-collection-dev' },
-      update: {},
-      create: {
-         id: 'seed-collection-dev',
-         name: 'Development',
-         description: 'Web development resources',
-         isPublic: true,
-         userId: alice.id,
-      },
+   let devCollection = await prisma.collection.findFirst({
+      where: { userId: alice.id, name: 'Development' },
    });
 
-   const nestjsCollection = await prisma.collection.upsert({
-      where: { id: 'seed-collection-nestjs' },
-      update: {},
-      create: {
-         id: 'seed-collection-nestjs',
-         name: 'NestJS',
-         description: 'NestJS specific resources',
-         isPublic: false,
-         userId: alice.id,
-         parentId: devCollection.id,
-      },
+   if (!devCollection) {
+      devCollection = await prisma.collection.create({
+         data: {
+            name: 'Development',
+            description: 'Web development resources',
+            isPublic: true,
+            userId: alice.id,
+         },
+      });
+   }
+
+   let nestjsCollection = await prisma.collection.findFirst({
+      where: { userId: alice.id, name: 'NestJS' },
    });
+
+   if (!nestjsCollection) {
+      nestjsCollection = await prisma.collection.create({
+         data: {
+            name: 'NestJS',
+            description: 'NestJS specific resources',
+            isPublic: false,
+            userId: alice.id,
+            parentId: devCollection.id,
+         },
+      });
+   }
 
    // ─── Bookmarks ────────────────────────────────────────────────────────────
 
    await prisma.bookmark.upsert({
-      where: { id: 'seed-bookmark-nestjs' },
+      where: { userId_url: { userId: alice.id, url: 'https://docs.nestjs.com' } },
       update: {},
       create: {
-         id: 'seed-bookmark-nestjs',
          url: 'https://docs.nestjs.com',
          title: 'NestJS Documentation',
          description:
@@ -72,10 +77,9 @@ async function main() {
    });
 
    await prisma.bookmark.upsert({
-      where: { id: 'seed-bookmark-prisma' },
+      where: { userId_url: { userId: alice.id, url: 'https://www.prisma.io/docs' } },
       update: {},
       create: {
-         id: 'seed-bookmark-prisma',
          url: 'https://www.prisma.io/docs',
          title: 'Prisma Documentation',
          description: 'Next-generation ORM for Node.js and TypeScript.',
@@ -86,10 +90,9 @@ async function main() {
    });
 
    await prisma.bookmark.upsert({
-      where: { id: 'seed-bookmark-turbo' },
+      where: { userId_url: { userId: alice.id, url: 'https://turbo.build/repo/docs' } },
       update: {},
       create: {
-         id: 'seed-bookmark-turbo',
          url: 'https://turbo.build/repo/docs',
          title: 'Turborepo Documentation',
          description: 'High-performance build system for JavaScript and TypeScript codebases.',
@@ -99,7 +102,6 @@ async function main() {
       },
    });
 
-   // Populate full-text search vectors
    await prisma.$executeRaw`
       UPDATE "Bookmark"
       SET "searchVector" = to_tsvector(

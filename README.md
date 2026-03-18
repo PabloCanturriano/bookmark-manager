@@ -121,14 +121,17 @@ App runs at:
 ### Docker (alternative)
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
-This starts PostgreSQL and boots both apps. Run migrations separately after the DB is up:
+This starts PostgreSQL, runs migrations, seeds demo data, and boots both apps.
 
-```bash
-pnpm --filter=api db:migrate
-```
+**Demo credentials (seeded automatically):**
+
+| Email | Password |
+|-------|----------|
+| alice@example.com | password123 |
+| bob@example.com | password123 |
 
 ### Useful commands
 
