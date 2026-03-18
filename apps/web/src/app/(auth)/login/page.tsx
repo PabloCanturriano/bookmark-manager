@@ -4,7 +4,7 @@ import { Alert, Button, Form, Input, Typography } from 'antd';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LoginSchema } from '@bookmark-manager/types';
+import { ErrorCode, LoginSchema } from '@bookmark-manager/types';
 import { useLoginMutation } from '@/lib/auth.queries';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -13,6 +13,7 @@ const { Title, Text } = Typography;
 export default function LoginPage() {
    const t = useTranslations('auth.login');
    const tVal = useTranslations('validation');
+   const tErr = useTranslations('errors');
    const router = useRouter();
    const { setUser } = useAuthStore();
    const { mutate: login, isPending, error } = useLoginMutation();
@@ -26,7 +27,12 @@ export default function LoginPage() {
       });
    };
 
-   const errorMessage = error instanceof Error ? error.message : error ? String(error) : null;
+   const errorCode = error instanceof Error ? error.message : null;
+   const errorMessage = errorCode
+      ? tErr.has(errorCode)
+         ? tErr(errorCode as never)
+         : tErr(ErrorCode.INTERNAL_ERROR)
+      : null;
 
    return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -38,7 +44,11 @@ export default function LoginPage() {
                <Text type="secondary">{t('subtitle')}</Text>
             </div>
 
-            {errorMessage && <Alert type="error" title={errorMessage} className="mb-4" showIcon />}
+            {errorMessage && (
+               <div className="pb-4">
+                  <Alert type="error" title={errorMessage} showIcon />
+               </div>
+            )}
 
             <Form layout="vertical" onFinish={onFinish} disabled={isPending}>
                <Form.Item

@@ -3,7 +3,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { LoginDto, RegisterDto } from '@bookmark-manager/types';
+import { ErrorCode, LoginDto, RegisterDto } from '@bookmark-manager/types';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtPayload } from './strategies/jwt.strategy';
 
@@ -25,7 +25,7 @@ export class AuthService {
       const existing = await this.prisma.user.findUnique({
          where: { email: dto.email },
       });
-      if (existing) throw new ConflictException('Email already in use');
+      if (existing) throw new ConflictException(ErrorCode.EMAIL_ALREADY_EXISTS);
 
       const passwordHash = await bcrypt.hash(dto.password, 10);
       const user = await this.prisma.user.create({
@@ -39,10 +39,10 @@ export class AuthService {
       const user = await this.prisma.user.findUnique({
          where: { email: dto.email },
       });
-      if (!user) throw new UnauthorizedException('Invalid credentials');
+      if (!user) throw new UnauthorizedException(ErrorCode.INVALID_CREDENTIALS);
 
       const valid = await bcrypt.compare(dto.password, user.passwordHash);
-      if (!valid) throw new UnauthorizedException('Invalid credentials');
+      if (!valid) throw new UnauthorizedException(ErrorCode.INVALID_CREDENTIALS);
 
       return this.issueTokens(user.id, user.email);
    }
@@ -54,7 +54,7 @@ export class AuthService {
       });
 
       if (!stored || stored.revokedAt || stored.expiresAt < new Date()) {
-         throw new UnauthorizedException('Invalid or expired refresh token');
+         throw new UnauthorizedException(ErrorCode.INVALID_REFRESH_TOKEN);
       }
 
       await this.prisma.refreshToken.update({
